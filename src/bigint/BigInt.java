@@ -154,27 +154,6 @@ public class BigInt {
     }
 
     public BigInt multiply(BigInt other) {
-        /**for(int i = x.digits.length - 1; i >= 0; i--) {
-            c = factory.build();
-            c.initializeWithSize(y.digits.length + 1 + step);
-            k = c.digits.length - 1 - step;
-
-            for(int j = y.digits.length - 1; j >= 0; j--) {
-                prod = (long) x.digits[i] * y.digits[j] + carry;
-                c.digits[k] = (int) (prod % BASE);
-                carry = prod / BASE;
-                k--;
-            }
-
-            if (carry != 0) {
-                c.digits[0] = Math.toIntExact(carry);
-                carry = 0;
-            }
-
-            step++;
-            products[i] = factory.build((T) c.resize());
-        }*/
-
         BigInt anInt = new BigInt("0");
         int length = sPart > other.getsPart() ? 2 * sPart + 1 : 2 * other.getsPart() + 1;
         for (int i = 0; i < length; i++) {

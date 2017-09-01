@@ -174,5 +174,28 @@ public class BigIntTest {
         assertThat(a.multiply(b)).isEqualTo(expectedResult);
     }
 
+    @Test
+    public void shouldMultiplyNegative() throws Exception {
+        BigInt a = new BigInt("1");
+        BigInt b = new BigInt("-1");
 
+        assertThat(a.multiply(b)).isEqualTo(b);
+    }
+
+    @Test
+    public void shouldMultiplyNegative2() throws Exception {
+        BigInt a = new BigInt("-1");
+        BigInt b = new BigInt("1");
+
+        assertThat(a.multiply(a)).isEqualTo(b);
+    }
+
+    @Test
+    public void shouldMultiplyNegative3() throws Exception {
+        BigInt a = new BigInt("-6291236858798355625002240310849051763302244841609637222019848440367474974319646025221986149943002309351421662310425123115121755038535");
+        BigInt b = new BigInt("14912223718264696338397856927216645003797842400010184754757240303931468158450472964700379410986934684302727999568876470644700283834353922266629081467130884678");
+        BigInt expectedResult = new BigInt("-93816331502993923091074681745972328389387234745632754071327312547773537319847305813663606090731352833926730120370563093374774457937232800827021163412895528374627877544826676795156373404654734474790459480180794112942934255829804307230786697468216690732505036908966356345599307169858531066730");
+
+        assertThat(a.multiply(b)).isEqualTo(expectedResult);
+    }
 }
