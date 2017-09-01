@@ -60,3 +60,4 @@ buildNumber.properties
 /target/
 /bigint-java.iml
 /.idea/
+/.idea/workspace.xml
