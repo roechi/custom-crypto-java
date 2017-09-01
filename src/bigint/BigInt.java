@@ -1,16 +1,18 @@
 package bigint;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class BigInt {
 
-    private final long base = (long) Math.pow(10, 16);
+    private final long base = (long) Math.pow(10, 8);
 
     private long[] cells;
-    private final int size = 32;
+    private final int size = 128;
     private int sign = 1;
     private int sPart;
+    private int digitsPerCell = 8;
 
 
     public BigInt(String s) {
@@ -21,8 +23,8 @@ public class BigInt {
         } else {
             trimmed = s;
         }
-        int remainder = trimmed.length() % 16;
-        int numberOfCells = trimmed.length() / 16;
+        int remainder = trimmed.length() % digitsPerCell;
+        int numberOfCells = trimmed.length() / digitsPerCell;
         sPart = remainder > 0 ? numberOfCells : numberOfCells - 1;
         cells = new long[size];
         IntStream
@@ -30,7 +32,7 @@ public class BigInt {
                 .forEach(i -> getCells()[i] = readCellFromString(trimmed, i));
 
         if (remainder > 0) {
-            getCells()[sPart] = Long.valueOf(trimmed.substring(0, trimmed.length() - numberOfCells * 16));
+            getCells()[sPart] = Long.valueOf(trimmed.substring(0, trimmed.length() - numberOfCells * digitsPerCell));
         }
     }
 
@@ -57,7 +59,7 @@ public class BigInt {
     }
 
     private Long readCellFromString(String s, int i) {
-        return Long.valueOf(s.substring(s.length() - ((i + 1) * 16), s.length() - (i * 16)));
+        return Long.valueOf(s.substring(s.length() - ((i + 1) * digitsPerCell), s.length() - (i * digitsPerCell)));
     }
 
     @Override
@@ -73,7 +75,7 @@ public class BigInt {
     }
 
     private String fillZeros(String s) {
-        String zeroString = IntStream.range(0, 16 - s.length()).mapToObj(i -> "0").reduce((a, b) -> a + b).orElse("");
+        String zeroString = IntStream.range(0, digitsPerCell - s.length()).mapToObj(i -> "0").reduce((a, b) -> a + b).orElse("");
         return zeroString + s;
     }
 
@@ -136,7 +138,7 @@ public class BigInt {
     public boolean equals(Object obj) {
         assert obj instanceof BigInt;
         BigInt other = (BigInt) obj;
-        return size == other.size && sPart == other.sPart && Arrays.equals(cells, other.cells);
+        return sPart == other.sPart && Arrays.equals(cells, other.cells);
     }
 
     public BigInt subtract(BigInt other) {
@@ -149,5 +151,40 @@ public class BigInt {
         } else {
             return add(negative(other));
         }
+    }
+
+    public BigInt multiply(BigInt other) {
+        /**for(int i = x.digits.length - 1; i >= 0; i--) {
+            c = factory.build();
+            c.initializeWithSize(y.digits.length + 1 + step);
+            k = c.digits.length - 1 - step;
+
+            for(int j = y.digits.length - 1; j >= 0; j--) {
+                prod = (long) x.digits[i] * y.digits[j] + carry;
+                c.digits[k] = (int) (prod % BASE);
+                carry = prod / BASE;
+                k--;
+            }
+
+            if (carry != 0) {
+                c.digits[0] = Math.toIntExact(carry);
+                carry = 0;
+            }
+
+            step++;
+            products[i] = factory.build((T) c.resize());
+        }*/
+
+        BigInt anInt = new BigInt("0");
+        int length = sPart > other.getsPart() ? 2 * sPart + 1 : 2 * other.getsPart() + 1;
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < length; j++) {
+                long temp = cells[j] * other.cells[i];
+                String zeros = IntStream.range(0, (i + j) * 8).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
+                anInt = anInt.add(new BigInt("" + temp + zeros));
+            }
+        }
+
+        return anInt;
     }
 }
