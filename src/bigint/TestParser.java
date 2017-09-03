@@ -22,12 +22,15 @@ public class TestParser {
         BigInt operandG = new BigInt("0");
         BigInt operandN = new BigInt("0");
         BigInt operandM = new BigInt("0");
+        int run = 0;
         int failed = 0;
-        try (
-                InputStream fis = new FileInputStream(path);
-                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
-                BufferedReader br = new BufferedReader(isr);
-        ) {
+
+        InputStream fis = new FileInputStream(path);
+        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+        BufferedReader br = new BufferedReader(isr);
+
+        {
+
             while ((line = br.readLine()) != null) {
                 if (line.charAt(0) != '#') {
                     if (line.charAt(0) == 't') {
@@ -45,6 +48,7 @@ public class TestParser {
                         if (!operandA.add(operandB).equals(operandC)) {
                             failed++;
                         }
+                        run++;
                     }
                     if (line.charAt(0) == 'D') {
                         operandD = new BigInt(line.substring(2));
@@ -52,6 +56,7 @@ public class TestParser {
                         if (!operandA.subtract(operandB).equals(operandD)) {
                             failed++;
                         }
+                        run++;
                     }
                     if (line.charAt(0) == 'E') {
                         operandE = new BigInt(line.substring(2));
@@ -59,6 +64,7 @@ public class TestParser {
                         if (!operandA.multiply(operandB).equals(operandE)) {
                             failed++;
                         }
+                        run++;
                     }
                     if (line.charAt(0) == 'F') {
                         if (line.length() == 2) {
@@ -71,11 +77,12 @@ public class TestParser {
                         boolean success = false;
                         if (line.length() == 2) {
                             operandG = BigInt.ZERO;
+                            success = true;
                             try {
                                 BigIntDiv divResult = operandA.divide(operandB);
+                                success = false;
                             } catch (IllegalArgumentException e) {
-                                success = true;
-                                System.out.println(testName + ": " + operandA + " / " + operandB + " = undefined "  + success);
+                                System.out.println(testName + ": " + operandA + " / " + operandB + " = undefined " + success);
                             }
                         } else {
                             operandG = new BigInt(line.substring(2));
@@ -86,10 +93,11 @@ public class TestParser {
                         if (!success) {
                             failed++;
                         }
+                        run++;
                     }
                 }
             }
-            System.out.println("Tests failed: " + failed);
+            System.out.println("Failed tests: " + failed + " out of " + run + ".");
         }
     }
 }

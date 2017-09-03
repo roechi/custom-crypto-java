@@ -58,7 +58,7 @@ public class BigInt {
 
     private void reduce() {
         IntStream.range(0, size).forEach(i -> {
-            if (cells[i] > 0)
+            if (cells[i] != 0)
                 sPart = i;
         });
     }
@@ -158,7 +158,7 @@ public class BigInt {
     public boolean equals(Object obj) {
         assert obj instanceof BigInt;
         BigInt other = (BigInt) obj;
-        return sPart == other.sPart && Arrays.equals(cells, other.cells);
+        return sPart == other.sPart && Arrays.equals(cells, other.cells) && sign == other.getSign();
     }
 
     public BigInt subtract(BigInt other) {
@@ -188,7 +188,9 @@ public class BigInt {
                 anInt = anInt.add(new BigInt("" + temp + zeros));
             }
         }
-
+        if (!anInt.equals(ZERO)) {
+            anInt.setSign(sign * other.getSign());
+        }
         return anInt;
     }
 
@@ -201,77 +203,96 @@ public class BigInt {
         if (other.equals(new BigInt("0"))) {
             throw new IllegalArgumentException("Division by zero!");
         }
+        if (sPart > 0) {
+            if (isNegative() && other.isNegative()) {
+                BigInt result = negative(this).divide(negative(other)).getDivResult().add(new BigInt("1"));
+                BigInt remainder = this.subtract(result.multiply(other));
+                return new BigIntDiv(result, remainder);
+            }
+            if (isNegative() && !other.isNegative()) {
+                BigInt result = negative(this).divide(other).getDivResult().add(new BigInt("1"));
+                result.setSign(sign);
+                BigInt remainder = this.subtract(result.multiply(other));
+                return new BigIntDiv(result, remainder);
+            }
+        }
         if (sPart < other.sPart) {
+            if (other.isNegative() && isNegative()) {
+                BigInt one = new BigInt("1");
+                BigInt remainder = this.subtract(other.multiply(one));
+                return new BigIntDiv(one, remainder);
+            }
+            if (isNegative()) {
+                BigInt minusOne = new BigInt("-1");
+                BigInt remainder = this.subtract(other.multiply(minusOne));
+                return new BigIntDiv(minusOne, remainder);
+            } else {
+                return new BigIntDiv(ZERO, new BigInt(cells));
+            }
+        }
+        if (sPart == other.sPart && compare(other) == -1 && !isNegative() && !other.isNegative()) {
             return new BigIntDiv(ZERO, new BigInt(cells));
         }
-        if (sPart == other.sPart && abs().compare(other.abs()) == -1) {
-            return new BigIntDiv(ZERO, new BigInt(cells));
-        }
-        /**boolean flipSign = false;
-         if (isNegative()) {
-         this.setSign(1);
-         flipSign = true;
-         }
-         boolean otherFlipSign = false;
-         if (other.isNegative()) {
-         other = negative(other);
-         otherFlipSign = true;
-         }
-         if (compare(other) == -1) {
-         return new BigIntDiv(new BigInt("0"), this);
-         } else if (compare(other) == 0) {
-         return new BigIntDiv(new BigInt("1"), new BigInt("0"));
-         }
-         if (flipSign) {
-         this.setSign(-1);
-         }
-         if (otherFlipSign) {
-         other = negative(other);
-         }*/
         int k = other.getsPart();
         int l = sPart - k;
         BigInt r = new BigInt("0");
         for (int i = 0; i <= k; i++) {
             r.getCells()[i] = cells[l + i];
         }
-        //r.setSign(sign);
+        r.setSign(sign);
         r.reduce();
         long[] qCells = new long[l + 1];
         for (int i = l; i >= 0; i--) {
             long e = 0;
             if (r.getsPart() < 1) {
-                e = estimate(0L, r.getCells()[r.getsPart()], other.getCells()[other.getsPart()], sign, other.getSign());
+                e = estimate(0L, r.getCells()[r.getsPart()], other.getCells()[other.getsPart()], r.getSign(), other.getSign());
             } else {
-                e = estimate(r.getCells()[r.getsPart()], r.getCells()[r.getsPart() - 1], other.getCells()[other.getsPart()], sign, other.getSign());
+                e = estimate(r.getCells()[r.getsPart()], r.getCells()[r.getsPart() - 1], other.getCells()[other.getsPart()], r.getSign(), other.getSign());
             }
             BigInt tmp = other.multiply(new BigInt("" + e));
-            if (tmp.getsPart() == r.getsPart()) {
-
+            if ((tmp.getsPart() <= r.getsPart())) {
+                /**if (r.getsPart() == other.getsPart() + 1) {
+                    r = r.divide(new BigInt("" + base)).getDivResult();
+                }*/
                 if (!tmp.equals(r)) {
                     while (tmp.compare(r) == 1) {
-                        if (e > 0) {
+                        if (e == 0 && r.abs().subtract(other.abs()).abs().compare(ZERO) == 1) {
+                            if ((r.isNegative() && !other.isNegative()) || (!r.isNegative() && other.isNegative())) {
+                                e = -1;
+                            } else {
+                                e = 1;
+                            }
+                            tmp = other.multiply(new BigInt("" + e));
+                        }
+                        if ((r.isNegative() && e > 0) || (!r.isNegative() && e < 0)) {
+                            e++;
+                            tmp = tmp.add(other);
+                        } else {
+                            e--;
+                            tmp = tmp.subtract(other);
+                        }
+                    }
+
+                    while (r.subtract(tmp).compare(other.abs()) == 1) {
+                        if ((r.isNegative() && e > 0) || (!r.isNegative() && e < 0)) {
                             e--;
                             tmp = tmp.subtract(other);
                         } else {
                             e++;
                             tmp = tmp.add(other);
                         }
-                    }
-                    while (r.subtract(tmp).compare(other.abs()) == 1) {
-                        if (e < 0) {
-                            e--;
-                            tmp = tmp.subtract(other);
-                        } else {
-                            e++;
-                            tmp = tmp.add(other);
+                        if (e < 0 && e * -1 > base || e > base) {
+
                         }
                     }
                 }
                 qCells[i] = e;
                 r = r.subtract(tmp);
-            }
+            } /**else {
+                System.out.print("jumped");
+            }*/
             if (i != 0) {
-                r = r.multiply(new BigInt("" + base)).add(new BigInt("" + cells[i - 1]));
+                r = r.multiply(new BigInt("" + base)).add(new BigInt("" + (sign * cells[i - 1])));
             }
         }
 
@@ -299,9 +320,9 @@ public class BigInt {
                 int count = sPart;
                 int greater = 0;
                 while (greater == 0 && count >= 0) {
-                    if (cells[count] > other.getCells()[count]) {
+                    if (sign * cells[count] > other.getSign() * other.getCells()[count]) {
                         greater = 1;
-                    } else if (cells[count] < other.getCells()[count]) {
+                    } else if (sign * cells[count] < other.getSign() * other.getCells()[count]) {
                         greater = -1;
                     }
                     count--;
