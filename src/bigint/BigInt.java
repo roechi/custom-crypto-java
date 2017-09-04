@@ -1,6 +1,8 @@
 package bigint;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -36,6 +38,25 @@ public class BigInt {
         if (remainder > 0) {
             getCells()[sPart] = Long.valueOf(trimmed.substring(0, trimmed.length() - numberOfCells * digitsPerCell));
         }
+    }
+
+    public BigInt(long number) {
+        if (number < 0) {
+            sign = -1;
+            number = number * -1;
+        }
+        ArrayList<Long> longs = new ArrayList<>();
+        do {
+            longs.add(number % base);
+            number /= base;
+        } while (number > 0);
+
+        if (longs.size() > size) {
+            throw new IllegalArgumentException("Number too large.");
+        }
+        cells = new long[size];
+        IntStream.range(0, longs.size()).forEach(i -> cells[i] = longs.get(i));
+        reduce();
     }
 
     public BigInt(long[] cells) {
@@ -261,54 +282,40 @@ public class BigInt {
                 r = r.multiply(new BigInt("" + base)).add(new BigInt("" + (sign * cells[i - 1])));
                 i--;
             }
-            //if ((tmp.getsPart() <= r.getsPart())) {
-            /**if (r.getsPart() == other.getsPart() + 1) {
-             r = r.divide(new BigInt("" + base)).getDivResult();
-             }*/
-            boolean cardinalitySwitched = false;
-            if (!tmp.equals(r)) {
-                do {
-                    cardinalitySwitched = false;
-                    while (tmp.compare(r) == 1 && abs(e) < base) {
-                        if (e == 0 && r.abs().subtract(other.abs()).abs().compare(ZERO) == 1) {
-                            if ((r.isNegative() && !other.isNegative()) || (!r.isNegative() && other.isNegative())) {
-                                e = -1;
-                            } else {
-                                e = 1;
-                            }
-                            tmp = other.multiply(new BigInt("" + e));
-                        }
-                        if ((r.isNegative() && e > 0) || (!r.isNegative() && e < 0)) {
-                            e++;
-                            tmp = tmp.add(other);
-                        } else {
-                            e--;
-                            tmp = tmp.subtract(other);
-                        }
-                    }
 
-                    while (r.subtract(tmp).compare(other.abs()) == 1 && abs(e) < base) {
-                        if ((r.isNegative() && e > 0) || (!r.isNegative() && e < 0)) {
-                            e--;
-                            tmp = tmp.subtract(other);
+            if (!tmp.equals(r)) {
+
+                while (tmp.compare(r) == 1 && abs(e) < base) {
+                    if (e == 0 && r.abs().subtract(other.abs()).abs().compare(ZERO) == 1) {
+                        if ((r.isNegative() && !other.isNegative()) || (!r.isNegative() && other.isNegative())) {
+                            e = -1;
                         } else {
-                            e++;
-                            tmp = tmp.add(other);
+                            e = 1;
                         }
+                        tmp = other.multiply(new BigInt("" + e));
                     }
-                    if (abs(e) >= base) {
-                        cardinalitySwitched = true;
-                        r = r.divide(new BigInt("" + base)).getDivResult();
-                        e = getEstimate(r, other);
-                        i++;
+                    if ((r.isNegative() && e > 0) || (!r.isNegative() && e < 0)) {
+                        e++;
+                        tmp = tmp.add(other);
+                    } else {
+                        e--;
+                        tmp = tmp.subtract(other);
                     }
-                } while (cardinalitySwitched);
+                }
+
+                while (r.subtract(tmp).compare(other.abs()) == 1 && abs(e) < base) {
+                    if ((r.isNegative() && e > 0) || (!r.isNegative() && e < 0)) {
+                        e--;
+                        tmp = tmp.subtract(other);
+                    } else {
+                        e++;
+                        tmp = tmp.add(other);
+                    }
+                }
+
             }
             qCells[i] = e;
             r = r.subtract(tmp);
-            //} /**else {
-            // System.out.print("jumped");
-            //}*/
             if (i != 0) {
                 r = r.multiply(new BigInt("" + base)).add(new BigInt("" + (sign * cells[i - 1])));
             }

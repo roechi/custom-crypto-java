@@ -2,10 +2,10 @@ package bigint;
 
 import org.junit.Test;
 
-public class TestParserTest {
+public class ArithmeticTest {
 
     @Test
-    public void test() throws Exception {
+    public void testWithInputFile() throws Exception {
         TestParser testParser = new TestParser("arithmetic_tests.txt");
         testParser.parseAndRun();
     }

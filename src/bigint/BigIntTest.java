@@ -462,4 +462,39 @@ public class BigIntTest {
         assertThat(div.getRemainder()).isEqualTo(expectedRemainder);
     }
 
+    @Test
+    public void shouldCreateBigIntFromLong() throws Exception {
+        BigInt fromString = new BigInt("123");
+        BigInt fromLong = new BigInt(123);
+
+        assertThat(fromString).isEqualTo(fromLong);
+    }
+
+    @Test
+    public void shouldCreateBigIntFromLong2() throws Exception {
+        BigInt fromString = new BigInt("-123");
+        BigInt fromLong = new BigInt(-123);
+
+        assertThat(fromString).isEqualTo(fromLong);
+    }
+
+    @Test
+    public void shouldCreateBigIntFromLong3() throws Exception {
+        BigInt fromString = new BigInt("123456789123");
+        BigInt fromLong = new BigInt(123456789123L);
+
+        assertThat(fromString.getsPart()).isEqualTo(1);
+        assertThat(fromLong.getsPart()).isEqualTo(1);
+        assertThat(fromString).isEqualTo(fromLong);
+    }
+
+    @Test
+    public void shouldCreateBigIntFromLong4() throws Exception {
+        BigInt fromString = new BigInt("-123456789123");
+        BigInt fromLong = new BigInt(-123456789123L);
+
+        assertThat(fromString.getsPart()).isEqualTo(1);
+        assertThat(fromLong.getsPart()).isEqualTo(1);
+        assertThat(fromString).isEqualTo(fromLong);
+    }
 }
