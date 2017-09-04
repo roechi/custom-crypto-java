@@ -244,18 +244,21 @@ public class BigInt {
         long[] qCells = new long[l + 1];
         for (int i = l; i >= 0; i--) {
             long e = 0;
-            if (r.getsPart() < 1) {
-                e = estimate(0L, r.getCells()[r.getsPart()], other.getCells()[other.getsPart()], r.getSign(), other.getSign());
-            } else {
-                e = estimate(r.getCells()[r.getsPart()], r.getCells()[r.getsPart() - 1], other.getCells()[other.getsPart()], r.getSign(), other.getSign());
-            }
+            e = getEstimate(other, r);
             BigInt tmp = other.multiply(new BigInt("" + e));
-            if ((tmp.getsPart() <= r.getsPart())) {
-                /**if (r.getsPart() == other.getsPart() + 1) {
-                    r = r.divide(new BigInt("" + base)).getDivResult();
-                }*/
-                if (!tmp.equals(r)) {
-                    while (tmp.compare(r) == 1) {
+            if (i != 0 && tmp.getsPart() > r.getsPart()) {
+                r = r.multiply(new BigInt("" + base)).add(new BigInt("" + (sign * cells[i - 1])));
+                i--;
+            }
+            //if ((tmp.getsPart() <= r.getsPart())) {
+            /**if (r.getsPart() == other.getsPart() + 1) {
+             r = r.divide(new BigInt("" + base)).getDivResult();
+             }*/
+            boolean cardinalitySwitched = false;
+            if (!tmp.equals(r)) {
+                do {
+                    cardinalitySwitched = false;
+                    while (tmp.compare(r) == 1 && abs(e) < base) {
                         if (e == 0 && r.abs().subtract(other.abs()).abs().compare(ZERO) == 1) {
                             if ((r.isNegative() && !other.isNegative()) || (!r.isNegative() && other.isNegative())) {
                                 e = -1;
@@ -273,7 +276,7 @@ public class BigInt {
                         }
                     }
 
-                    while (r.subtract(tmp).compare(other.abs()) == 1) {
+                    while (r.subtract(tmp).compare(other.abs()) == 1 && abs(e) < base) {
                         if ((r.isNegative() && e > 0) || (!r.isNegative() && e < 0)) {
                             e--;
                             tmp = tmp.subtract(other);
@@ -281,16 +284,20 @@ public class BigInt {
                             e++;
                             tmp = tmp.add(other);
                         }
-                        if (e < 0 && e * -1 > base || e > base) {
-
-                        }
                     }
-                }
-                qCells[i] = e;
-                r = r.subtract(tmp);
-            } /**else {
-                System.out.print("jumped");
-            }*/
+                    if (abs(e) >= base) {
+                        cardinalitySwitched = true;
+                        r = r.divide(new BigInt("" + base)).getDivResult();
+                        e = getEstimate(r, other);
+                        i++;
+                    }
+                } while (cardinalitySwitched);
+            }
+            qCells[i] = e;
+            r = r.subtract(tmp);
+            //} /**else {
+            // System.out.print("jumped");
+            //}*/
             if (i != 0) {
                 r = r.multiply(new BigInt("" + base)).add(new BigInt("" + (sign * cells[i - 1])));
             }
@@ -298,6 +305,16 @@ public class BigInt {
 
         BigInt q = new BigInt(qCells);
         return new BigIntDiv(q, r);
+    }
+
+    private long getEstimate(BigInt other, BigInt r) {
+        long e;
+        if (r.getsPart() < 1) {
+            e = estimate(0L, r.getCells()[r.getsPart()], other.getCells()[other.getsPart()], r.getSign(), other.getSign());
+        } else {
+            e = estimate(r.getCells()[r.getsPart()], r.getCells()[r.getsPart() - 1], other.getCells()[other.getsPart()], r.getSign(), other.getSign());
+        }
+        return e;
     }
 
     public int compare(BigInt other) {
@@ -336,6 +353,10 @@ public class BigInt {
         BigInt abs = new BigInt(cells);
         abs.setSign(1);
         return abs;
+    }
+
+    private long abs(long number) {
+        return number < 0 ? number * -1 : number;
     }
 }
 
