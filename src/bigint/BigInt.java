@@ -200,6 +200,10 @@ public class BigInt {
     }
 
     public BigIntDiv divide(BigInt other) {
+        return divideInternal(other, 1);
+    }
+
+    public BigIntDiv divideInternal(BigInt other, long factor) {
         if (other.equals(new BigInt("0"))) {
             throw new IllegalArgumentException("Division by zero!");
         }
@@ -232,6 +236,13 @@ public class BigInt {
         }
         if (sPart == other.sPart && compare(other) == -1 && !isNegative() && !other.isNegative()) {
             return new BigIntDiv(ZERO, new BigInt(cells));
+        }
+        if (sPart > 0 && other.getsPart() > 0) {
+            if (other.getCells()[other.getsPart()] < base / 2) {
+                factor = base / (other.getCells()[other.getsPart()] + 1);
+                BigInt bigIntFactor = new BigInt("" + factor);
+                return multiply(bigIntFactor).divideInternal(other.multiply(bigIntFactor), factor);
+            }
         }
         int k = other.getsPart();
         int l = sPart - k;
@@ -304,6 +315,9 @@ public class BigInt {
         }
 
         BigInt q = new BigInt(qCells);
+        if (factor != 1) {
+            r = r.divide(new BigInt("" + factor)).getDivResult();
+        }
         return new BigIntDiv(q, r);
     }
 
