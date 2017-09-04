@@ -2,8 +2,6 @@ package bigint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class BigInt {
@@ -16,8 +14,12 @@ public class BigInt {
     private int sPart = 0;
     private int digitsPerCell = 8;
 
-    public final static BigInt ZERO = new BigInt("0");
+    public final static BigInt ZERO = new BigInt(0);
+    public final static BigInt ONE = new BigInt(1);
 
+    public BigInt() {
+        cells = new long[size];
+    }
 
     public BigInt(String s) {
         String trimmed;
@@ -200,7 +202,7 @@ public class BigInt {
     }
 
     public BigInt multiply(BigInt other) {
-        BigInt anInt = new BigInt("0");
+        BigInt anInt = ZERO;
         int length = sPart > other.getsPart() ? 2 * sPart + 1 : 2 * other.getsPart() + 1;
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
@@ -225,17 +227,17 @@ public class BigInt {
     }
 
     public BigIntDiv divideInternal(BigInt other, long factor) {
-        if (other.equals(new BigInt("0"))) {
+        if (other.equals(ZERO)) {
             throw new IllegalArgumentException("Division by zero!");
         }
         if (sPart > 0) {
             if (isNegative() && other.isNegative()) {
-                BigInt result = negative(this).divide(negative(other)).getDivResult().add(new BigInt("1"));
+                BigInt result = negative(this).divide(negative(other)).getDivResult().add(ONE);
                 BigInt remainder = this.subtract(result.multiply(other));
                 return new BigIntDiv(result, remainder);
             }
             if (isNegative() && !other.isNegative()) {
-                BigInt result = negative(this).divide(other).getDivResult().add(new BigInt("1"));
+                BigInt result = negative(this).divide(other).getDivResult().add(ONE);
                 result.setSign(sign);
                 BigInt remainder = this.subtract(result.multiply(other));
                 return new BigIntDiv(result, remainder);
@@ -243,7 +245,7 @@ public class BigInt {
         }
         if (sPart < other.sPart) {
             if (other.isNegative() && isNegative()) {
-                BigInt one = new BigInt("1");
+                BigInt one = ONE;
                 BigInt remainder = this.subtract(other.multiply(one));
                 return new BigIntDiv(one, remainder);
             }
@@ -267,7 +269,7 @@ public class BigInt {
         }
         int k = other.getsPart();
         int l = sPart - k;
-        BigInt r = new BigInt("0");
+        BigInt r = new BigInt();
         for (int i = 0; i <= k; i++) {
             r.getCells()[i] = cells[l + i];
         }
