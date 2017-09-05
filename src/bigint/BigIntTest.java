@@ -497,4 +497,61 @@ public class BigIntTest {
         assertThat(fromLong.getsPart()).isEqualTo(1);
         assertThat(fromString).isEqualTo(fromLong);
     }
+
+    @Test
+    public void shouldConvertFromHex() throws Exception {
+        BigInt dec = new BigInt(16);
+        BigInt hex = BigInt.fromHexString("10");
+
+        assertThat(hex).isEqualTo(dec);
+    }
+
+    @Test
+    public void shouldConvertFromHex2() throws Exception {
+        BigInt dec = new BigInt(65537);
+        BigInt hex = BigInt.fromHexString("010001");
+
+        assertThat(hex).isEqualTo(dec);
+    }
+
+    @Test
+    public void shouldConvertFromHex3() throws Exception {
+        BigInt dec = new BigInt(1283248328534L);
+        BigInt hex = BigInt.fromHexString("012ac78f8f56");
+
+        assertThat(hex).isEqualTo(dec);
+    }
+
+    @Test
+    public void shouldConvertFromHex4() throws Exception {
+        BigInt dec = new BigInt(15);
+        BigInt hex = BigInt.fromHexString("0f");
+
+        assertThat(hex).isEqualTo(dec);
+    }
+
+    @Test
+    public void shouldConvertFromHex5() throws Exception {
+        BigInt dec = new BigInt(325436436457657657L);
+        BigInt hex = BigInt.fromHexString("04842eb6f8071539");
+
+        assertThat(hex).isEqualTo(dec);
+    }
+
+    @Test
+    @Ignore("Correct, but takes very long.")
+    public void shouldConvertFromHex6() throws Exception {
+        BigInt dec = new BigInt("123494343940300399459434350309932883495060594943283283283218128439395945460600403439229312432543543645775687698798007897874565534132432543645765768987078078087012349434394030039945943435030993288349506059494328328328321812843939594546060040343922931243254354364577568769879800789787456553413243254364576576898707807808701234943439403003994594343503099328834950605949432832832832181284393959454606004034392293");
+        BigInt hex = BigInt.fromHexString("01419ccb955906491b66aabc6278b3faf9ffe3f03c8c12492f7f9a5869fcc31c70d2ef1b1d3cc52b9c65895dc0bb5b9530f750f1bf423fe61975aab77298f4735ccb85d083f18ef2ddf4eea8d833bfb28aa64a377fb2ba948b0cb154988f791ea0431156d1e118d533c28c2960244f9c5de5078a2680a1499c3e214b6b6a22faa050a377248f18730ba598e177cd82dd6f9091e3eb06082a7ddf4062f3a07e26bdabcf55a201fe76d0e5");
+
+        assertThat(hex).isEqualTo(dec);
+    }
+
+    @Test
+    public void shouldConvertFromHex7() throws Exception {
+        BigInt dec = new BigInt("4534346436456456456567879800908797687546535432121242124");
+        BigInt hex = BigInt.fromHexString("2f573dbb43f0c18b04e060d444cfc97e65285c8a3c520c");
+
+        assertThat(hex).isEqualTo(dec);
+    }
 }

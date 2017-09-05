@@ -5,13 +5,46 @@ import java.nio.charset.Charset;
 
 public class TestParser {
 
-    private String path;
+    public static void parseAndRunHexConversionTests(String path) throws IOException {
+        String line, testName = "";
+        String decimal = "";
+        String hexadecimal = "";
 
-    public TestParser(String filePath) {
-        path = filePath;
+        InputStream fis = new FileInputStream(path);
+        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+        BufferedReader br = new BufferedReader(isr);
+
+        int failed = 0;
+        int run = 0;
+
+        {
+            while ((line = br.readLine()) != null) {
+                if (line.charAt(0) != '#') {
+                    if (line.charAt(0) == 't') {
+                        testName = line.substring(2);
+                    }
+                    if (line.charAt(0) == 'd') {
+                        decimal = line.substring(2);
+                    }
+                    if (line.charAt(0) == 'h') {
+                        hexadecimal = line.substring(2);
+
+                        BigInt bigIntDec = new BigInt(decimal);
+                        BigInt bigIntHex = BigInt.fromHexString(hexadecimal);
+                        boolean success = bigIntDec.equals(bigIntHex);
+                        System.out.println(testName + ": " + hexadecimal + " -> " + "Expected: " + decimal + " Actual: " + bigIntHex + " -> " + success);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
+                    }
+                }
+            }
+        }
     }
 
-    public void parseAndRun() throws IOException {
+
+    public static void parseAndRunArithmeticTests(String path) throws IOException {
         String line, testName = "";
         BigInt operandA = new BigInt("0");
         BigInt operandB = new BigInt("0");

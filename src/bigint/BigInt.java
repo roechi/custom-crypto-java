@@ -8,17 +8,32 @@ public class BigInt {
 
     private final long base = (long) Math.pow(10, 8);
 
-    private long[] cells;
-    private final int size = 128;
+    private final static int digitsPerCell = 8;
+    private final static int size = 256;
+
     private int sign = 1;
     private int sPart = 0;
-    private int digitsPerCell = 8;
+    private long[] cells = new long[size];
 
     public final static BigInt ZERO = new BigInt(0);
     public final static BigInt ONE = new BigInt(1);
+    public final static BigInt TWO = new BigInt(2);
+    public final static BigInt THREE = new BigInt(3);
+    public final static BigInt FOUR = new BigInt(4);
+    public final static BigInt FIVE = new BigInt(5);
+    public final static BigInt SIX = new BigInt(6);
+    public final static BigInt SEVEN = new BigInt(7);
+    public final static BigInt EIGHT = new BigInt(8);
+    public final static BigInt NINE = new BigInt(9);
+    public final static BigInt TEN = new BigInt(10);
+    public final static BigInt ELEVEN = new BigInt(11);
+    public final static BigInt TWELVE = new BigInt(12);
+    public final static BigInt THIRTEEN = new BigInt(13);
+    public final static BigInt FOURTEEN = new BigInt(14);
+    public final static BigInt FIFTEEN = new BigInt(15);
+    public final static BigInt SIXTEEN = new BigInt(16);
 
     public BigInt() {
-        cells = new long[size];
     }
 
     public BigInt(String s) {
@@ -32,7 +47,6 @@ public class BigInt {
         int remainder = trimmed.length() % digitsPerCell;
         int numberOfCells = trimmed.length() / digitsPerCell;
         sPart = remainder > 0 ? numberOfCells : numberOfCells - 1;
-        cells = new long[size];
         IntStream
                 .range(0, numberOfCells)
                 .forEach(i -> getCells()[i] = readCellFromString(trimmed, i));
@@ -40,6 +54,63 @@ public class BigInt {
         if (remainder > 0) {
             getCells()[sPart] = Long.valueOf(trimmed.substring(0, trimmed.length() - numberOfCells * digitsPerCell));
         }
+    }
+
+    public static BigInt fromHexString(String s) {
+        String hexRep = "0123456789abcdef";
+
+        BigInt result = new BigInt();
+        char firstChar = s.charAt(0);
+        if (firstChar == 'f') {
+            result.setSign(-1);
+        }
+        int pos = -1;
+        for (int i = 0; i < s.length() && pos < 0; i++) {
+            if (s.charAt(i) != 'f' && s.charAt(i) != '0') {
+                pos = i;
+            }
+        }
+        if (pos < 0) {
+            pos = 0;
+        }
+
+        String hex = s.substring(pos, s.length());
+
+        int digits = hex.length();
+        BigInt sum = ZERO;
+        BigInt scalingFactor = SIXTEEN;
+        for (int d = 0; d < digits; d++) {
+            char c = hex.charAt(digits - 1 - d);
+            int i = hexRep.indexOf(c);
+            if (d > 1) {
+                scalingFactor = scalingFactor.multiply(SIXTEEN);
+            }
+            if (d == 0) {
+                sum = sum.add(new BigInt(i));
+            } else {
+                sum = sum.add(scalingFactor.multiply(new BigInt(i)));
+            }
+        }
+
+        return sum;
+    }
+
+    public static BigInt pow(BigInt base, int exp) {
+        if (exp == 0) {
+            return ONE;
+        }
+        if (exp == 1) {
+            return new BigInt(base);
+        }
+        BigInt result = new BigInt(base);
+        for (int i = 2; i <= exp; i++) {
+            result = result.multiply(base);
+        }
+        return result;
+    }
+
+    public BigInt pow(int exp) {
+        return pow(this, exp);
     }
 
     public BigInt(long number) {
@@ -56,19 +127,23 @@ public class BigInt {
         if (longs.size() > size) {
             throw new IllegalArgumentException("Number too large.");
         }
-        cells = new long[size];
         IntStream.range(0, longs.size()).forEach(i -> cells[i] = longs.get(i));
         reduce();
     }
 
     public BigInt(long[] cells) {
-        this.cells = new long[size];
         IntStream.range(0, cells.length).forEach(l -> this.cells[l] = cells[l]);
         reduce();
         if (this.cells[getsPart()] < 0) {
             this.cells[getsPart()] *= -1;
             sign = -1;
         }
+    }
+
+    public BigInt(BigInt other) {
+        cells = other.getCells();
+        sign = other.getSign();
+        sPart = other.getsPart();
     }
 
     public static BigInt negative(BigInt bigInt) {
@@ -207,8 +282,8 @@ public class BigInt {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 long temp = cells[j] * other.cells[i];
-                String zeros = IntStream.range(0, (i + j) * 8).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
-                anInt = anInt.add(new BigInt("" + temp + zeros));
+                String zeros = IntStream.range(0, (i + j) * digitsPerCell).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
+                anInt = anInt.add(new BigInt(temp + zeros));
             }
         }
         if (!anInt.equals(ZERO)) {
@@ -328,6 +403,10 @@ public class BigInt {
             r = r.divide(new BigInt("" + factor)).getDivResult();
         }
         return new BigIntDiv(q, r);
+    }
+
+    public BigInt mod(BigInt other) {
+        return divide(other).getRemainder();
     }
 
     private long getEstimate(BigInt other, BigInt r) {
