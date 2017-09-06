@@ -6,15 +6,6 @@ import java.util.stream.IntStream;
 
 public class BigInt {
 
-    private final long base = (long) Math.pow(10, 8);
-
-    private final static int digitsPerCell = 8;
-    private final static int size = 256;
-
-    private int sign = 1;
-    private int sPart = 0;
-    private long[] cells = new long[size];
-
     public final static BigInt ZERO = new BigInt(0);
     public final static BigInt ONE = new BigInt(1);
     public final static BigInt TWO = new BigInt(2);
@@ -32,6 +23,12 @@ public class BigInt {
     public final static BigInt FOURTEEN = new BigInt(14);
     public final static BigInt FIFTEEN = new BigInt(15);
     public final static BigInt SIXTEEN = new BigInt(16);
+    private final static int digitsPerCell = 8;
+    private final static int size = 256;
+    private final long base = (long) Math.pow(10, 8);
+    private int sign = 1;
+    private int sPart = 0;
+    private long[] cells = new long[size];
 
     public BigInt() {
     }
@@ -54,6 +51,39 @@ public class BigInt {
         if (remainder > 0) {
             getCells()[sPart] = Long.valueOf(trimmed.substring(0, trimmed.length() - numberOfCells * digitsPerCell));
         }
+    }
+
+    public BigInt(long number) {
+        if (number < 0) {
+            sign = -1;
+            number = number * -1;
+        }
+        ArrayList<Long> longs = new ArrayList<>();
+        do {
+            longs.add(number % base);
+            number /= base;
+        } while (number > 0);
+
+        if (longs.size() > size) {
+            throw new IllegalArgumentException("Number too large.");
+        }
+        IntStream.range(0, longs.size()).forEach(i -> cells[i] = longs.get(i));
+        reduce();
+    }
+
+    public BigInt(long[] cells) {
+        IntStream.range(0, cells.length).forEach(l -> this.cells[l] = cells[l]);
+        reduce();
+        if (this.cells[getsPart()] < 0) {
+            this.cells[getsPart()] *= -1;
+            sign = -1;
+        }
+    }
+
+    public BigInt(BigInt other) {
+        cells = other.getCells();
+        sign = other.getSign();
+        sPart = other.getsPart();
     }
 
     public static BigInt fromHexString(String s) {
@@ -109,49 +139,36 @@ public class BigInt {
         return result;
     }
 
-    public BigInt pow(int exp) {
-        return pow(this, exp);
-    }
-
-    public BigInt(long number) {
-        if (number < 0) {
-            sign = -1;
-            number = number * -1;
-        }
-        ArrayList<Long> longs = new ArrayList<>();
-        do {
-            longs.add(number % base);
-            number /= base;
-        } while (number > 0);
-
-        if (longs.size() > size) {
-            throw new IllegalArgumentException("Number too large.");
-        }
-        IntStream.range(0, longs.size()).forEach(i -> cells[i] = longs.get(i));
-        reduce();
-    }
-
-    public BigInt(long[] cells) {
-        IntStream.range(0, cells.length).forEach(l -> this.cells[l] = cells[l]);
-        reduce();
-        if (this.cells[getsPart()] < 0) {
-            this.cells[getsPart()] *= -1;
-            sign = -1;
-        }
-    }
-
-    public BigInt(BigInt other) {
-        cells = other.getCells();
-        sign = other.getSign();
-        sPart = other.getsPart();
-    }
-
     public static BigInt negative(BigInt bigInt) {
         BigInt negative = new BigInt(bigInt.getCells());
         if (!bigInt.equals(ZERO)) {
             negative.setSign(bigInt.getSign() * -1);
         }
         return negative;
+    }
+
+    private static IntStream reverseOrderStream(IntStream intStream) {
+        int[] tempArray = intStream.toArray();
+        return IntStream.range(1, tempArray.length + 1).boxed()
+                .mapToInt(i -> tempArray[tempArray.length - i]);
+    }
+
+    public String toHexString() {
+        BigInt toConvert = new BigInt(this);
+
+        String digits = "0123456789abcdef";
+        if (toConvert.equals(ZERO)) return "00";
+        String hex = "";
+        while (toConvert.compare(ZERO) == 1) {
+            int digit = (int) toConvert.divide(SIXTEEN).getRemainder().getCells()[0];                // rightmost digit
+            hex = digits.charAt(digit) + hex;  // string concatenation
+            toConvert = toConvert.divide(SIXTEEN).getDivResult();
+        }
+        return hex.length() % 2 == 0 ? hex : "0" + hex;
+    }
+
+    public BigInt pow(int exp) {
+        return pow(this, exp);
     }
 
     private void reduce() {
@@ -180,12 +197,6 @@ public class BigInt {
     private String fillZeros(String s) {
         String zeroString = IntStream.range(0, digitsPerCell - s.length()).mapToObj(i -> "0").reduce((a, b) -> a + b).orElse("");
         return zeroString + s;
-    }
-
-    private static IntStream reverseOrderStream(IntStream intStream) {
-        int[] tempArray = intStream.toArray();
-        return IntStream.range(1, tempArray.length + 1).boxed()
-                .mapToInt(i -> tempArray[tempArray.length - i]);
     }
 
     public BigInt add(BigInt other) {

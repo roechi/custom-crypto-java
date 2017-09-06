@@ -30,9 +30,16 @@ public class TestParser {
                         hexadecimal = line.substring(2);
 
                         BigInt bigIntDec = new BigInt(decimal);
-                        BigInt bigIntHex = BigInt.fromHexString(hexadecimal);
-                        boolean success = bigIntDec.equals(bigIntHex);
-                        System.out.println(testName + ": " + hexadecimal + " -> " + "Expected: " + decimal + " Actual: " + bigIntHex + " -> " + success);
+                        BigInt bigIntFromHex = BigInt.fromHexString(hexadecimal);
+                        String bigIntToHex = bigIntDec.toHexString();
+                        boolean success = bigIntDec.equals(bigIntFromHex);
+                        System.out.println(testName + " from Hex: " + hexadecimal + " -> " + "Expected: " + decimal + " Actual: " + bigIntFromHex + " -> " + success);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
+                        success = hexadecimal.equals(bigIntToHex);
+                        System.out.println(testName + " to Hex: " + decimal + " -> " + "Expected: " + hexadecimal + " Actual: " + bigIntToHex + " -> " + success);
                         if (!success) {
                             failed++;
                         }
@@ -41,6 +48,7 @@ public class TestParser {
                 }
             }
         }
+        System.out.println("Failed tests: " + failed + " out of " + run + ".");
     }
 
 

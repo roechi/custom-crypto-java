@@ -554,4 +554,36 @@ public class BigIntTest {
 
         assertThat(hex).isEqualTo(dec);
     }
+
+    @Test
+    public void shouldConvertToHex() throws Exception {
+        BigInt dec = new BigInt(16);
+        String expectedResult = "10";
+
+        assertThat(dec.toHexString()).isEqualTo(expectedResult);
+    }
+
+    @Test
+    public void shouldConvertToHex2() throws Exception {
+        BigInt dec = new BigInt(65537);
+        String expectedResult = "010001";
+
+        assertThat(dec.toHexString()).isEqualTo(expectedResult);
+    }
+
+    @Test
+    public void shouldConvertToHex3() throws Exception {
+        BigInt dec = new BigInt(1283248328534L);
+        String expectedResult = "012ac78f8f56";
+
+        assertThat(dec.toHexString()).isEqualTo(expectedResult);
+    }
+
+    @Test
+    public void shouldConvertToHex4() throws Exception {
+        BigInt dec = new BigInt("6456456576585865858865876");
+        String expectedResult = "055735365c37d2c2275ad4";
+
+        assertThat(dec.toHexString()).isEqualTo(expectedResult);
+    }
 }
