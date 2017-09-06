@@ -602,4 +602,12 @@ public class BigIntTest {
 
         assertThat(BigInt.negative(BigInt.fromHexString(a)).toHexStringTwosComplement(64)).isEqualTo(b);
     }
+
+    @Test
+    public void shouldParseTwosComplement() throws Exception {
+        String a = "fffffffffffffffffffffffffffffffffffffffffffffffff9b503696664a1cc";
+        String b = "000000000000000000000000000000000000000000000000064afc96999b5e34";
+
+        assertThat(BigInt.fromHexStringTwosComplement(a)).isEqualTo(BigInt.negative(BigInt.fromHexString(b)));
+    }
 }

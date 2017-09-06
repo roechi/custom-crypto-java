@@ -155,6 +155,35 @@ public class BigInt {
                 .mapToInt(i -> tempArray[tempArray.length - i]);
     }
 
+    private static String invertHexStringTwosComlement(int width, String hexString) {
+        String hexRep = "0123456789abcdef";
+        String zeros = IntStream.range(0, width - hexString.length()).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
+        hexString = zeros + hexString;
+        List<Integer> inverse = hexString.chars().map(hexRep::indexOf).map(c -> 15 - c).mapToObj(Integer::new).collect(Collectors.toList());
+
+        int carry = 1;
+        for (int i = 0; i < inverse.size() && carry == 1; i++) {
+            int ind = inverse.size() - 1 - i;
+            int val = inverse.get(ind);
+            if (val != 15) {
+                inverse.set(ind, val + carry);
+                carry = 0;
+            } else {
+                inverse.set(ind, 0);
+            }
+        }
+        return inverse.stream().map(hexRep::charAt).map(c -> "" + c).reduce((a, b) -> a + b).orElse("");
+    }
+
+    public static BigInt fromHexStringTwosComplement(String hex) {
+        if (hex.charAt(0) == 'f') {
+            String inverted = invertHexStringTwosComlement(hex.length(), hex);
+            BigInt bigInt = fromHexString(inverted);
+            return negative(bigInt);
+        }
+        return fromHexString(hex);
+    }
+
     public String toHexString() {
         BigInt toConvert = new BigInt(this);
 
@@ -481,24 +510,8 @@ public class BigInt {
     }
 
     public String toHexStringTwosComplement(int width) {
-        String hexRep = "0123456789abcdef";
         String hexString = toHexString();
-        String zeros = IntStream.range(0, width - toHexString().length()).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
-        hexString = zeros + hexString;
-        List<Integer> inverse = hexString.chars().map(hexRep::indexOf).map(c -> 15 - c).mapToObj(Integer::new).collect(Collectors.toList());
-
-        int carry = 1;
-        for (int i = 0; i < inverse.size() && carry == 1; i++) {
-            int ind = inverse.size() - 1 - i;
-            int val = inverse.get(ind);
-            if (val != 15) {
-                inverse.set(ind, val + carry);
-                carry = 0;
-            } else {
-                inverse.set(ind, 0);
-            }
-        }
-        String result = inverse.stream().map(hexRep::charAt).map(c -> "" + c).reduce((a, b) -> a + b).orElse("");
+        String result = invertHexStringTwosComlement(width, hexString);
         return result;
     }
 }
