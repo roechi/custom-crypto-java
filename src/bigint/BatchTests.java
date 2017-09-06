@@ -14,4 +14,9 @@ public class BatchTests {
     public void testHexToDecConversion() throws Exception {
         TestParser.parseAndRunHexConversionTests("convert_hex_tests.txt");
     }
+
+    @Test
+    public void testMul10() throws Exception {
+        TestParser.parseAndRunMul10Tests("mult10_tests.txt");
+    }
 }

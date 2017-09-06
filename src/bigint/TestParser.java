@@ -51,6 +51,65 @@ public class TestParser {
         System.out.println("Failed tests: " + failed + " out of " + run + ".");
     }
 
+    public static void parseAndRunMul10Tests(String path) throws IOException {
+        String line, testName = "";
+        BigInt a = new BigInt();
+        BigInt b = new BigInt();
+        String c = "";
+        String d = "";
+        String e = "";
+        String f = "";
+        String g = "";
+        String h = "";
+
+        InputStream fis = new FileInputStream(path);
+        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+        BufferedReader br = new BufferedReader(isr);
+
+        int failed = 0;
+        int run = 0;
+
+        {
+            while ((line = br.readLine()) != null) {
+                if (line.charAt(0) != '#') {
+                    if (line.charAt(0) == 'a') {
+                        a = BigInt.fromHexString(line.substring(2));
+                    }
+                    if (line.charAt(0) == 'b') {
+                        b = BigInt.fromHexString(line.substring(2));
+                        BigInt result = a.mul10(1);
+                        boolean success = result.equals(b);
+                        System.out.println(a + " * 10 -> expected: " + b + " actual: " + result + " -> " + success);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
+                    }
+                    if (line.charAt(0) == 'c') {
+
+                    }
+                    if (line.charAt(0) == 'd') {
+
+                    }
+                    if (line.charAt(0) == 'e') {
+
+                    }
+                    if (line.charAt(0) == 'f') {
+
+                    }
+                    if (line.charAt(0) == 'g') {
+
+                    }
+                    if (line.charAt(0) == 'h') {
+
+                    }
+
+
+                }
+            }
+        }
+        System.out.println("Failed tests: " + failed + " out of " + run + ".");
+    }
 
     public static void parseAndRunArithmeticTests(String path) throws IOException {
         String line, testName = "";

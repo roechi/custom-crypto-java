@@ -2,6 +2,8 @@ package bigint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class BigInt {
@@ -101,7 +103,7 @@ public class BigInt {
             }
         }
         if (pos < 0) {
-            pos = 0;
+            pos = s.length() - 1;
         }
 
         String hex = s.substring(pos, s.length());
@@ -159,7 +161,9 @@ public class BigInt {
         String digits = "0123456789abcdef";
         if (toConvert.equals(ZERO)) return "00";
         String hex = "";
-        while (toConvert.compare(ZERO) == 1) {
+        int sign = toConvert.getSign();
+        toConvert = toConvert.abs();
+        while (toConvert.abs().compare(ZERO) == 1) {
             int digit = (int) toConvert.divide(SIXTEEN).getRemainder().getCells()[0];                // rightmost digit
             hex = digits.charAt(digit) + hex;  // string concatenation
             toConvert = toConvert.divide(SIXTEEN).getDivResult();
@@ -470,6 +474,32 @@ public class BigInt {
 
     private long abs(long number) {
         return number < 0 ? number * -1 : number;
+    }
+
+    public BigInt mul10(int times) {
+        return multiply(TEN.pow(times));
+    }
+
+    public String toHexStringTwosComplement(int width) {
+        String hexRep = "0123456789abcdef";
+        String hexString = toHexString();
+        String zeros = IntStream.range(0, width - toHexString().length()).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
+        hexString = zeros + hexString;
+        List<Integer> inverse = hexString.chars().map(hexRep::indexOf).map(c -> 15 - c).mapToObj(Integer::new).collect(Collectors.toList());
+
+        int carry = 1;
+        for (int i = 0; i < inverse.size() && carry == 1; i++) {
+            int ind = inverse.size() - 1 - i;
+            int val = inverse.get(ind);
+            if (val != 15) {
+                inverse.set(ind, val + carry);
+                carry = 0;
+            } else {
+                inverse.set(ind, 0);
+            }
+        }
+        String result = inverse.stream().map(hexRep::charAt).map(c -> "" + c).reduce((a, b) -> a + b).orElse("");
+        return result;
     }
 }
 
