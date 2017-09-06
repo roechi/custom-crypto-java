@@ -97,13 +97,19 @@ public class BigInt {
             result.setSign(-1);
         }
         int pos = -1;
-        for (int i = 0; i < s.length() && pos < 0; i++) {
-            if (s.charAt(i) != 'f' && s.charAt(i) != '0') {
-                pos = i;
+        if (firstChar == 'f' || firstChar == '0') {
+            for (int i = 0; i < s.length() && pos < 0; i++) {
+                if (s.charAt(i) != firstChar) {
+                    pos = i;
+                }
             }
         }
         if (pos < 0) {
-            pos = s.length() - 1;
+            if (firstChar == '0' || firstChar == 'f') {
+                pos = s.length() - 1;
+            } else {
+                pos = 0;
+            }
         }
 
         String hex = s.substring(pos, s.length());
@@ -157,8 +163,7 @@ public class BigInt {
 
     private static String invertHexStringTwosComlement(int width, String hexString) {
         String hexRep = "0123456789abcdef";
-        String zeros = IntStream.range(0, width - hexString.length()).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
-        hexString = zeros + hexString;
+
         List<Integer> inverse = hexString.chars().map(hexRep::indexOf).map(c -> 15 - c).mapToObj(Integer::new).collect(Collectors.toList());
 
         int carry = 1;
@@ -511,8 +516,12 @@ public class BigInt {
 
     public String toHexStringTwosComplement(int width) {
         String hexString = toHexString();
-        String result = invertHexStringTwosComlement(width, hexString);
-        return result;
+        String zeros = IntStream.range(0, width - hexString.length()).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
+        hexString = zeros + hexString;
+        if (isNegative()) {
+            hexString = invertHexStringTwosComlement(width, hexString);
+        }
+        return hexString;
     }
 }
 

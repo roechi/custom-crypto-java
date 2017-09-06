@@ -53,8 +53,9 @@ public class TestParser {
 
     public static void parseAndRunMul10Tests(String path) throws IOException {
         String line, testName = "";
-        BigInt a = new BigInt();
-        BigInt b = new BigInt();
+
+        String a = "";
+        String b = "";
         String c = "";
         String d = "";
         String e = "";
@@ -72,36 +73,73 @@ public class TestParser {
         {
             while ((line = br.readLine()) != null) {
                 if (line.charAt(0) != '#') {
+                    if (line.charAt(0) == 't') {
+                        testName = line.substring(2);
+                    }
                     if (line.charAt(0) == 'a') {
-                        a = BigInt.fromHexString(line.substring(2));
+                        a = line.substring(2);
                     }
                     if (line.charAt(0) == 'b') {
-                        b = BigInt.fromHexString(line.substring(2));
-                        BigInt result = a.mul10(1);
-                        boolean success = result.equals(b);
-                        System.out.println(a + " * 10 -> expected: " + b + " actual: " + result + " -> " + success);
+                        b = line.substring(2);
+                        boolean success = testMult10(a, b, 1, testName);
                         if (!success) {
                             failed++;
                         }
                         run++;
                     }
                     if (line.charAt(0) == 'c') {
+                        c = line.substring(2);
 
+                        boolean success = testMult10(a, c, 2, testName);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
                     }
                     if (line.charAt(0) == 'd') {
+                        d = line.substring(2);
 
+                        boolean success = testMult10(a, d, 3, testName);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
                     }
                     if (line.charAt(0) == 'e') {
+                        e = line.substring(2);
 
+                        boolean success = testMult10(a, e, 4, testName);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
                     }
                     if (line.charAt(0) == 'f') {
+                        f = line.substring(2);
 
+                        boolean success = testMult10(a, f, 5, testName);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
                     }
                     if (line.charAt(0) == 'g') {
+                        g = line.substring(2);
 
+                        boolean success = testMult10(a, g, 6, testName);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
                     }
                     if (line.charAt(0) == 'h') {
+                        h = line.substring(2);
 
+                        boolean success = testMult10(a, h, 7, testName);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
                     }
 
 
@@ -109,6 +147,18 @@ public class TestParser {
             }
         }
         System.out.println("Failed tests: " + failed + " out of " + run + ".");
+    }
+
+    private static boolean testMult10(String a, String c, int times, String testName) {
+        BigInt aBigInt = BigInt.fromHexStringTwosComplement(a);
+
+        BigInt result = aBigInt.mul10(times);
+
+        BigInt cBigInt = BigInt.fromHexStringTwosComplement(c);
+
+        boolean success = result.equals(cBigInt);
+        System.out.println(testName + ": " + a + " * 10 -> expected: " + c + " actual: " + result.toHexStringTwosComplement(64) + " -> " + success);
+        return success;
     }
 
     public static void parseAndRunArithmeticTests(String path) throws IOException {
