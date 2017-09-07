@@ -604,10 +604,27 @@ public class BigIntTest {
     }
 
     @Test
+    public void shouldNegateHexInTwosComplement3() throws Exception {
+        String a = "7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+        String b = "8000000000000000000000000000000000000000000000000000000000000001";
+
+        assertThat(BigInt.negative(BigInt.fromHexStringTwosComplement(a)).toHexStringTwosComplement(64)).isEqualTo(b);
+    }
+
+    @Test
     public void shouldParseTwosComplement() throws Exception {
         String a = "fffffffffffffffffffffffffffffffffffffffffffffffff9b503696664a1cc";
         String b = "000000000000000000000000000000000000000000000000064afc96999b5e34";
 
         assertThat(BigInt.fromHexStringTwosComplement(a)).isEqualTo(BigInt.negative(BigInt.fromHexString(b)));
     }
+
+    @Test
+    public void shouldShiftRight() throws Exception {
+        BigInt a = BigInt.fromHexStringTwosComplement("00000000000000000000000000000000000000000000000000000000151d7d9b");
+        BigInt b = BigInt.fromHexStringTwosComplement("000000000000000000000000000000000000000000000000000000000a8ebecd");
+
+        assertThat(a.shiftRight(1)).isEqualTo(b);
+    }
+
 }

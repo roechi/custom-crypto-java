@@ -294,7 +294,9 @@ public class BigInt {
     }
 
     public void setSign(int sign) {
-        this.sign = sign;
+        if (!this.equals(ZERO)) {
+            this.sign = sign;
+        }
     }
 
     public boolean isNegative() {
@@ -354,36 +356,30 @@ public class BigInt {
         if (other.equals(ZERO)) {
             throw new IllegalArgumentException("Division by zero!");
         }
-        if (sPart > 0) {
-            if (isNegative() && other.isNegative()) {
-                BigInt result = negative(this).divide(negative(other)).getDivResult().add(ONE);
-                BigInt remainder = this.subtract(result.multiply(other));
-                return new BigIntDiv(result, remainder);
-            }
-            if (isNegative() && !other.isNegative()) {
-                BigInt result = negative(this).divide(other).getDivResult().add(ONE);
-                result.setSign(sign);
-                BigInt remainder = this.subtract(result.multiply(other));
-                return new BigIntDiv(result, remainder);
-            }
+        if (abs().compare(other.abs()) == -1) {
+            return new BigIntDiv(ZERO, new BigInt(this));
         }
-        if (sPart < other.sPart) {
-            if (other.isNegative() && isNegative()) {
-                BigInt one = ONE;
-                BigInt remainder = this.subtract(other.multiply(one));
-                return new BigIntDiv(one, remainder);
-            }
-            if (isNegative()) {
-                BigInt minusOne = new BigInt("-1");
-                BigInt remainder = this.subtract(other.multiply(minusOne));
-                return new BigIntDiv(minusOne, remainder);
-            } else {
-                return new BigIntDiv(ZERO, new BigInt(cells));
-            }
+
+        if (isNegative() && other.isNegative()) {
+            BigIntDiv result = negative(this).divide(negative(other));
+            result.getDivResult().setSign(1);
+            result.getRemainder().setSign(-1);
+            return result;
         }
-        if (sPart == other.sPart && compare(other) == -1 && !isNegative() && !other.isNegative()) {
-            return new BigIntDiv(ZERO, new BigInt(cells));
+        if (isNegative() && !other.isNegative()) {
+            BigIntDiv result = negative(this).divide(other);
+            result.getDivResult().setSign(-1);
+            result.getRemainder().setSign(-1);
+            return result;
         }
+        if (!isNegative() && other.isNegative()) {
+            BigIntDiv result = negative(this).divide(other);
+            result.getDivResult().setSign(-1);
+            result.getRemainder().setSign(1);
+            return result;
+        }
+
+
         if (sPart > 0 && other.getsPart() > 0) {
             if (other.getCells()[other.getsPart()] < base / 2) {
                 factor = base / (other.getCells()[other.getsPart()] + 1);
@@ -522,6 +518,14 @@ public class BigInt {
             hexString = invertHexStringTwosComlement(width, hexString);
         }
         return hexString;
+    }
+
+    public BigInt shiftRight(int offset) {
+        BigInt result = new BigInt(this);
+        for (int j = 0; j < offset; j++) {
+            result = result.divide(TWO).getDivResult();
+        }
+        return result;
     }
 }
 

@@ -19,4 +19,14 @@ public class BatchTests {
     public void testMul10() throws Exception {
         TestParser.parseAndRunMul10Tests("mult10_tests.txt");
     }
+
+    @Test
+    public void testShift() throws Exception {
+        TestParser.parseAndRunShiftTests("shift_tests.txt");
+    }
+
+    @Test
+    public void testInverse() throws Exception {
+        TestParser.parseAndRunTwosComplementNegationTests("twos_complement_negation_tests.txt");
+    }
 }

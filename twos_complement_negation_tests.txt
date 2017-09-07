@@ -1,0 +1,79 @@
+#
+# Tests fuer das Negieren (additive Inverse)
+# im 2er-Komplement
+#
+# # Kommentar bis Zeilenende
+# t is the title of the test
+# s ist die Groesse der Zahl in Bits
+#
+# a Startwert
+# b negate(Startwert)
+#
+# Fuer negative Zahlen wird b als Startwert benutzt.
+#
+# Bei den Hex-Zahlen gibt es vorlaufende 0 bzw. f,
+# damit immer eine gerade Anzahl von Hex-Ziffern vorhanden ist,
+# d.h. es passt immer in Bytes.
+#
+# Version 1
+#
+t=Invers-Hex-1
+s=256
+a=0000000000000000000000000000000000000000000000000000000000000000
+b=0000000000000000000000000000000000000000000000000000000000000000
+#--------------------------
+t=Invers-Hex-2
+s=256
+a=0000000000000000000000000000000000000000000000000000000000000001
+b=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+#--------------------------
+t=Invers-Hex-3
+s=256
+a=0000000000000000000000000000000000000000000000000000000000000010
+b=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0
+#--------------------------
+t=Invers-Hex-4
+s=256
+a=00000000000000000000000000000000000000000000000000000000000003ff
+b=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc01
+#--------------------------
+t=Invers-Hex-5
+s=256
+a=0000000000000000000000000000000000000000000000000000000000010000
+b=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000
+#--------------------------
+t=Invers-Hex-6
+s=256
+a=000000000000000000000000000000000000000000000000064afc96999b5e34
+b=fffffffffffffffffffffffffffffffffffffffffffffffff9b503696664a1cc
+#--------------------------
+t=Invers-Hex-7
+s=256
+a=00000000000000000000000000000000000001f25677cf8f4467520d913c65cd
+b=fffffffffffffffffffffffffffffffffffffe0da9883070bb98adf26ec39a33
+#--------------------------
+t=Invers-Hex-8
+s=256
+a=0000000000000000000279c68807188c8619e552b9a3d791d891f64d446c6d86
+b=fffffffffffffffffffd863977f8e77379e61aad465c286e276e09b2bb93927a
+#--------------------------
+t=Invers-Hex-9
+s=256
+a=00000000042286b739bc0c4c20781a47cbe92f6ce7dacd80cd64e04500568176
+b=fffffffffbdd7948c643f3b3df87e5b83416d0931825327f329b1fbaffa97e8a
+#--------------------------
+t=Invers-Hex-10
+s=256
+a=0103fb2cc2b782bf0f364f98a6a2e8c4f47658e3889919758505d1b6b644669d
+b=fefc04d33d487d40f0c9b067595d173b0b89a71c7766e68a7afa2e4949bb9963
+#--------------------------
+t=Invers-Hex-11
+s=256
+a=7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+b=8000000000000000000000000000000000000000000000000000000000000001
+#--------------------------
+t=Invers-Hex-12
+s=256
+a=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+b=0000000000000000000000000000000000000000000000000000000000000001
+#--------------------------

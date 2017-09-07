@@ -51,6 +51,93 @@ public class TestParser {
         System.out.println("Failed tests: " + failed + " out of " + run + ".");
     }
 
+    public static void parseAndRunShiftTests(String path) throws IOException {
+        String line, testName = "";
+        String operatorNames = "bcdefgh";
+        String a = "";
+        BigInt aBigInt = new BigInt();
+
+        InputStream fis = new FileInputStream(path);
+        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+        BufferedReader br = new BufferedReader(isr);
+
+        int failed = 0;
+        int run = 0;
+
+        {
+            while ((line = br.readLine()) != null) {
+                if (line.charAt(0) != '#') {
+                    if (line.charAt(0) == 't') {
+                        testName = line.substring(2);
+                    }
+                    if (line.charAt(0) == 'a') {
+                        a = line.substring(2);
+                        aBigInt = BigInt.fromHexStringTwosComplement(a);
+                    }
+                    int index = operatorNames.indexOf(line.charAt(0));
+                    if (index != -1) {
+                        String expected = line.substring(2);
+                        BigInt expectedBigInt = BigInt.fromHexStringTwosComplement(expected);
+
+                        BigInt result = aBigInt.shiftRight(index + 1);
+                        boolean success = result.equals(expectedBigInt);
+                        System.out.println(testName + ": " + a + "(" + aBigInt + ")" + " >> " + (index + 1) + " -> expected: " + expected + " (" + expectedBigInt + ") " + " actual: " + result.toHexStringTwosComplement(64) + " (" + result + ") " + " -> " + success);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
+                    }
+                }
+            }
+        }
+        System.out.println("Failed tests: " + failed + " out of " + run + ".");
+    }
+
+    public static void parseAndRunTwosComplementNegationTests(String path) throws IOException {
+        String line, testName = "";
+        String a = "";
+        String b = "";
+        int s = 0;
+        BigInt aBigInt = new BigInt();
+        BigInt bBigInt = new BigInt();
+
+        InputStream fis = new FileInputStream(path);
+        InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+        BufferedReader br = new BufferedReader(isr);
+
+        int failed = 0;
+        int run = 0;
+
+        {
+            while ((line = br.readLine()) != null) {
+                if (line.charAt(0) != '#') {
+                    if (line.charAt(0) == 't') {
+                        testName = line.substring(2);
+                    }
+                    if (line.charAt(0) == 's') {
+                        s = Integer.valueOf(line.substring(2));
+                    }
+                    if (line.charAt(0) == 'a') {
+                        a = line.substring(2);
+                        aBigInt = BigInt.fromHexStringTwosComplement(a);
+                    }
+                    if (line.charAt(0) == 'b') {
+                        b = line.substring(2);
+                        bBigInt = BigInt.fromHexStringTwosComplement(b);
+                        BigInt inverted = BigInt.negative(aBigInt);
+                        boolean success = bBigInt.toHexStringTwosComplement(s / 4).equals(inverted.toHexStringTwosComplement(s / 4));
+                        System.out.println(testName + ": " + a + " *(-1) -> (expected) :" + b + " actual: " + inverted.toHexStringTwosComplement(s / 4) + " -> " + success);
+                        if (!success) {
+                            failed++;
+                        }
+                        run++;
+                    }
+                }
+            }
+        }
+        System.out.println("Failed tests: " + failed + " out of " + run + ".");
+    }
+
     public static void parseAndRunMul10Tests(String path) throws IOException {
         String line, testName = "";
 
@@ -168,8 +255,8 @@ public class TestParser {
         BigInt operandC = new BigInt("0");
         BigInt operandD = new BigInt("0");
         BigInt operandE = new BigInt("0");
-        BigInt operandF = new BigInt("0");
         BigInt operandG = new BigInt("0");
+        BigInt operandF = new BigInt("0");
         BigInt operandN = new BigInt("0");
         BigInt operandM = new BigInt("0");
         int run = 0;
@@ -216,17 +303,17 @@ public class TestParser {
                         }
                         run++;
                     }
-                    if (line.charAt(0) == 'F') {
+                    if (line.charAt(0) == 'N') {
                         if (line.length() == 2) {
-                            operandF = BigInt.ZERO;
+                            operandN = BigInt.ZERO;
                         } else {
-                            operandF = new BigInt(line.substring(2));
+                            operandN = new BigInt(line.substring(2));
                         }
                     }
-                    if (line.charAt(0) == 'G') {
+                    if (line.charAt(0) == 'M') {
                         boolean success = false;
                         if (line.length() == 2) {
-                            operandG = BigInt.ZERO;
+                            operandM = BigInt.ZERO;
                             success = true;
                             try {
                                 BigIntDiv divResult = operandA.divide(operandB);
@@ -235,10 +322,10 @@ public class TestParser {
                                 System.out.println(testName + ": " + operandA + " / " + operandB + " = undefined " + success);
                             }
                         } else {
-                            operandG = new BigInt(line.substring(2));
+                            operandM = new BigInt(line.substring(2));
                             BigIntDiv divResult = operandA.divide(operandB);
-                            success = divResult.getDivResult().equals(operandF) && divResult.getRemainder().equals(operandG);
-                            System.out.println(testName + ": " + operandA + " / " + operandB + " = " + operandF + " | " + operandG + " : " + divResult.getDivResult() + " | " + divResult.getRemainder() + " -> " + success);
+                            success = divResult.getDivResult().equals(operandN) && divResult.getRemainder().equals(operandM);
+                            System.out.println(testName + ": " + operandA + " / " + operandB + " = " + operandN + " | " + operandM + " : " + divResult.getDivResult() + " | " + divResult.getRemainder() + " -> " + success);
                         }
                         if (!success) {
                             failed++;
