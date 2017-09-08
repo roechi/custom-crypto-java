@@ -352,6 +352,25 @@ public class BigInt {
         return divideInternal(other, 1);
     }
 
+    public BigIntDiv divideBoute(BigInt other) {
+        BigIntDiv result = divide(other);
+
+        if (abs().compare(other.abs()) != 0 && result.getRemainder().compare(ZERO) != 0) {
+            if (isNegative() && !other.isNegative()) {
+                BigInt div = result.getDivResult().subtract(ONE);
+                BigInt remainder = result.getRemainder().add(other);
+                result = new BigIntDiv(div, remainder);
+            } else if (isNegative() && other.isNegative()) {
+                BigInt div = result.getDivResult().add(ONE);
+                BigInt remainder = result.getRemainder().subtract(other);
+                result = new BigIntDiv(div, remainder);
+            }
+        }
+
+
+        return result;
+    }
+
     public BigIntDiv divideInternal(BigInt other, long factor) {
         if (other.equals(ZERO)) {
             throw new IllegalArgumentException("Division by zero!");
@@ -536,7 +555,7 @@ public class BigInt {
     public BigInt shiftRight(int offset) {
         BigInt result = new BigInt(this);
         for (int j = 0; j < offset; j++) {
-            result = result.divide(TWO).getDivResult();
+            result = result.divideBoute(TWO).getDivResult();
         }
         return result;
     }

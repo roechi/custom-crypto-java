@@ -155,58 +155,63 @@ f=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0
 g=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0
 h=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8
 #--------------------------
-t=ShiftRight-13
-s=256
-a=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffeae28265
-b=fffffffffffffffffffffffffffffffffffffffffffffffffffffffff5714133
-c=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffab8a099
-d=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffd5c504c
-e=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffeae2826
-f=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff571413
-g=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffab8a09
-h=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd5c504
+# FAULTY DATA
+#t=ShiftRight-13
+#s=256
+#a=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffeae28265 65 -> 0110 0101 >> 0011 0010
+#b=fffffffffffffffffffffffffffffffffffffffffffffffffffffffff5714133 33 -> 0011 0011 ?
+#c=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffab8a099
+#d=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffd5c504c
+#e=fffffffffffffffffffffffffffffffffffffffffffffffffffffffffeae2826
+#f=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff571413
+#g=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffab8a09
+#h=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd5c504
 #--------------------------
-t=ShiftRight-14
-s=256
-a=fffffffffffffffffffffffffffffffffffffffffffffffff2922066ba6603a3
-b=fffffffffffffffffffffffffffffffffffffffffffffffff94910335d3301d1
-c=fffffffffffffffffffffffffffffffffffffffffffffffffca48819ae9980e9
-d=fffffffffffffffffffffffffffffffffffffffffffffffffe52440cd74cc074
-e=ffffffffffffffffffffffffffffffffffffffffffffffffff2922066ba6603a
-f=ffffffffffffffffffffffffffffffffffffffffffffffffff94910335d3301d
-g=ffffffffffffffffffffffffffffffffffffffffffffffffffca48819ae9980f
-h=ffffffffffffffffffffffffffffffffffffffffffffffffffe52440cd74cc07
+# FAULTY DATA
+#t=ShiftRight-14
+#s=256
+#a=fffffffffffffffffffffffffffffffffffffffffffffffff2922066ba6603a3
+#b=fffffffffffffffffffffffffffffffffffffffffffffffff94910335d3301d1 d1 -> 1101 0001 >> 1110 1000
+#c=fffffffffffffffffffffffffffffffffffffffffffffffffca48819ae9980e9 e9 -> 1110 1001 ?
+#d=fffffffffffffffffffffffffffffffffffffffffffffffffe52440cd74cc074
+#e=ffffffffffffffffffffffffffffffffffffffffffffffffff2922066ba6603a
+#f=ffffffffffffffffffffffffffffffffffffffffffffffffff94910335d3301d
+#g=ffffffffffffffffffffffffffffffffffffffffffffffffffca48819ae9980f
+#h=ffffffffffffffffffffffffffffffffffffffffffffffffffe52440cd74cc07
 #--------------------------
-t=ShiftRight-15
-s=256
-a=fffffffffffffffffffffffffffffffffffffffe7845334e8d68709bd10a408e
-b=ffffffffffffffffffffffffffffffffffffffff3c2299a746b4384de8852047
-c=ffffffffffffffffffffffffffffffffffffffff9e114cd3a35a1c26f4429023
-d=ffffffffffffffffffffffffffffffffffffffffcf08a669d1ad0e137a214811
-e=ffffffffffffffffffffffffffffffffffffffffe7845334e8d68709bd10a409
-f=fffffffffffffffffffffffffffffffffffffffff3c2299a746b4384de885204
-g=fffffffffffffffffffffffffffffffffffffffff9e114cd3a35a1c26f442902
-h=fffffffffffffffffffffffffffffffffffffffffcf08a669d1ad0e137a21481
+# FAULTY DATA
+#t=ShiftRight-15
+#s=256
+#a=fffffffffffffffffffffffffffffffffffffffe7845334e8d68709bd10a408e
+#b=ffffffffffffffffffffffffffffffffffffffff3c2299a746b4384de8852047
+#c=ffffffffffffffffffffffffffffffffffffffff9e114cd3a35a1c26f4429023
+#d=ffffffffffffffffffffffffffffffffffffffffcf08a669d1ad0e137a214811 11 -> 0001 0001 >> 0000 1000
+#e=ffffffffffffffffffffffffffffffffffffffffe7845334e8d68709bd10a409 09 -> 0000 1001 ?
+#f=fffffffffffffffffffffffffffffffffffffffff3c2299a746b4384de885204
+#g=fffffffffffffffffffffffffffffffffffffffff9e114cd3a35a1c26f442902
+#h=fffffffffffffffffffffffffffffffffffffffffcf08a669d1ad0e137a21481
 #--------------------------
-t=ShiftRight-16
-s=256
-a=ffffffffffffffffffffffda8715248dcfe985a9ed627fe77247f98d59fb198a
-b=ffffffffffffffffffffffed438a9246e7f4c2d4f6b13ff3b923fcc6acfd8cc5
-c=fffffffffffffffffffffff6a1c5492373fa616a7b589ff9dc91fe63567ec663
-d=fffffffffffffffffffffffb50e2a491b9fd30b53dac4ffcee48ff31ab3f6331
-e=fffffffffffffffffffffffda8715248dcfe985a9ed627fe77247f98d59fb199
-f=fffffffffffffffffffffffed438a9246e7f4c2d4f6b13ff3b923fcc6acfd8cc
-g=ffffffffffffffffffffffff6a1c5492373fa616a7b589ff9dc91fe63567ec66
-h=ffffffffffffffffffffffffb50e2a491b9fd30b53dac4ffcee48ff31ab3f633
+# FAULTY DATA
+#t=ShiftRight-16
+#s=256
+#a=ffffffffffffffffffffffda8715248dcfe985a9ed627fe77247f98d59fb198a
+#b=ffffffffffffffffffffffed438a9246e7f4c2d4f6b13ff3b923fcc6acfd8cc5 c5 -> 1100 0101 >> 0110 0010
+#c=fffffffffffffffffffffff6a1c5492373fa616a7b589ff9dc91fe63567ec663 63 -> 0110 0011 ?
+#d=fffffffffffffffffffffffb50e2a491b9fd30b53dac4ffcee48ff31ab3f6331
+#e=fffffffffffffffffffffffda8715248dcfe985a9ed627fe77247f98d59fb199
+#f=fffffffffffffffffffffffed438a9246e7f4c2d4f6b13ff3b923fcc6acfd8cc
+#g=ffffffffffffffffffffffff6a1c5492373fa616a7b589ff9dc91fe63567ec66
+#h=ffffffffffffffffffffffffb50e2a491b9fd30b53dac4ffcee48ff31ab3f633
 #--------------------------
-t=ShiftRight-17
-s=256
-a=8000000000000000000000000000000000000000000000000000000000000001
-b=c000000000000000000000000000000000000000000000000000000000000000
-c=e000000000000000000000000000000000000000000000000000000000000000
-d=f000000000000000000000000000000000000000000000000000000000000000
-e=f800000000000000000000000000000000000000000000000000000000000000
-f=fc00000000000000000000000000000000000000000000000000000000000000
-g=fe00000000000000000000000000000000000000000000000000000000000000
-h=ff00000000000000000000000000000000000000000000000000000000000000
+# FAULTY DATA
+#t=ShiftRight-17
+#s=256
+#a=8000000000000000000000000000000000000000000000000000000000000001
+#b=c000000000000000000000000000000000000000000000000000000000000000 how can 1000 (8) be shifted to 1100 (c) with no more bytes to the left?
+#c=e000000000000000000000000000000000000000000000000000000000000000
+#d=f000000000000000000000000000000000000000000000000000000000000000
+#e=f800000000000000000000000000000000000000000000000000000000000000
+#f=fc00000000000000000000000000000000000000000000000000000000000000
+#g=fe00000000000000000000000000000000000000000000000000000000000000
+#h=ff00000000000000000000000000000000000000000000000000000000000000
 #--------------------------
