@@ -1,4 +1,4 @@
-package bigint;
+package de.remus.crypto.bigint;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -468,7 +468,9 @@ public class BigInt {
         if (equals(other)) {
             return 0;
         }
-
+        if (sPart == 0 && other.getsPart() == 0) {
+            return (sign * cells[0]) > (other.getSign() * other.getCells()[0]) ? 1 : -1;
+        }
         if (!this.isNegative() && other.isNegative()) {
             return 1;
         } else if (this.isNegative() && !other.isNegative()) {
@@ -476,9 +478,17 @@ public class BigInt {
         } else {
             if (sPart != other.getsPart()) {
                 if (sPart > other.getsPart()) {
-                    return 1;
+                    if (isNegative() && other.isNegative()) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
                 } else {
-                    return -1;
+                    if (isNegative() && other.isNegative()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
                 }
             } else {
                 int count = sPart;
@@ -490,6 +500,9 @@ public class BigInt {
                         greater = -1;
                     }
                     count--;
+                }
+                if (isNegative() && other.isNegative()) {
+                    greater = greater * -1;
                 }
                 return greater;
             }

@@ -1,4 +1,4 @@
-package bigint;
+package de.remus.crypto.bigint;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -289,7 +289,7 @@ public class BigIntTest {
     public void shouldDivide3() throws Exception {
         BigInt a = new BigInt("-17");
         BigInt b = new BigInt("-8");
-        BigIntDiv expectedResult = new BigIntDiv(new BigInt("3"), new BigInt("7"));
+        BigIntDiv expectedResult = new BigIntDiv(new BigInt("2"), new BigInt("-1"));
 
         BigIntDiv div = a.divide(b);
         assertThat(div.getDivResult()).isEqualTo(expectedResult.getDivResult());
@@ -300,7 +300,7 @@ public class BigIntTest {
     public void shouldDivide4() throws Exception {
         BigInt a = new BigInt("-8");
         BigInt b = new BigInt("-17");
-        BigIntDiv expectedResult = new BigIntDiv(new BigInt("1"), new BigInt("9"));
+        BigIntDiv expectedResult = new BigIntDiv(new BigInt("0"), new BigInt("-8"));
 
         BigIntDiv div = a.divide(b);
         assertThat(div.getDivResult()).isEqualTo(expectedResult.getDivResult());
@@ -312,7 +312,7 @@ public class BigIntTest {
     public void shouldDivide5() throws Exception {
         BigInt a = new BigInt("-8");
         BigInt b = new BigInt("17");
-        BigIntDiv expectedResult = new BigIntDiv(new BigInt("-1"), new BigInt("9"));
+        BigIntDiv expectedResult = new BigIntDiv(new BigInt("0"), new BigInt("-8"));
 
         BigIntDiv div = a.divide(b);
         assertThat(div.getDivResult()).isEqualTo(expectedResult.getDivResult());
@@ -406,8 +406,8 @@ public class BigIntTest {
     public void shouldDivideLarge8() throws Exception {
         BigInt a = new BigInt("-1208925819614629174706175");
         BigInt b = new BigInt("-281474976710655");
-        BigInt expectedResult = new BigInt("4294967297");
-        BigInt expectedRemainder = new BigInt("281470681743360");
+        BigInt expectedResult = new BigInt("4294967296");
+        BigInt expectedRemainder = new BigInt("-4294967295");
 
         BigIntDiv div = a.divide(b);
         assertThat(div.getDivResult()).isEqualTo(expectedResult);
@@ -418,8 +418,8 @@ public class BigIntTest {
     public void shouldDivideLarge9() throws Exception {
         BigInt a = new BigInt("-554751");
         BigInt b = new BigInt("-3456");
-        BigInt expectedResult = new BigInt("161");
-        BigInt expectedRemainder = new BigInt("1665");
+        BigInt expectedResult = new BigInt("160");
+        BigInt expectedRemainder = new BigInt("-1791");
 
         BigIntDiv div = a.divide(b);
         assertThat(div.getDivResult()).isEqualTo(expectedResult);
@@ -430,8 +430,8 @@ public class BigIntTest {
     public void shouldDivideLarge10() throws Exception {
         BigInt a = new BigInt("-9650076807698");
         BigInt b = new BigInt("295147905179352825855");
-        BigInt expectedResult = new BigInt("-1");
-        BigInt expectedRemainder = new BigInt("295147895529276018157");
+        BigInt expectedResult = new BigInt("0");
+        BigInt expectedRemainder = new BigInt("-9650076807698");
 
         BigIntDiv div = a.divide(b);
         assertThat(div.getDivResult()).isEqualTo(expectedResult);
@@ -442,8 +442,8 @@ public class BigIntTest {
     public void shouldDivideLarge11() throws Exception {
         BigInt a = new BigInt("-1208925819614629174706175");
         BigInt b = new BigInt("17592186044415");
-        BigInt expectedResult = new BigInt("-68719476737");
-        BigInt expectedRemainder = new BigInt("17523466567680");
+        BigInt expectedResult = new BigInt("-68719476736");
+        BigInt expectedRemainder = new BigInt("-68719476735");
 
         BigIntDiv div = a.divide(b);
         assertThat(div.getDivResult()).isEqualTo(expectedResult);

@@ -1,4 +1,4 @@
-package bigint;
+package de.remus.crypto.bigint;
 
 public class BigIntDiv {
 

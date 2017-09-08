@@ -1,4 +1,4 @@
-package bigint;
+package de.remus.crypto.bigint;
 
 import java.io.*;
 import java.nio.charset.Charset;
