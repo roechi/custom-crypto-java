@@ -173,15 +173,25 @@ public class BigInt {
     }
 
     public static BigInt pow(BigInt base, int exp) {
+        if (exp < 0) {
+            throw new IllegalArgumentException("Exponent must not be negative");
+        }
+        if (base.equals(ZERO)) {
+            return ZERO;
+        }
         if (exp == 0) {
             return ONE;
         }
         if (exp == 1) {
             return new BigInt(base);
         }
-        BigInt result = new BigInt(base);
-        for (int i = 2; i <= exp; i++) {
-            result = result.multiply(base);
+        BigInt result = ONE;
+        String e = Integer.toBinaryString(exp);
+        for (int i = 0; i < e.length(); i++) {
+            result = result.multiply(result);
+            if (e.charAt(i) == '1') {
+                result = result.multiply(base);
+            }
         }
         return result;
     }

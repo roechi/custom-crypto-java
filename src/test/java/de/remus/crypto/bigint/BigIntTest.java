@@ -640,4 +640,22 @@ public class BigIntTest {
 
         assertThat(randomOdd.divide(BigInt.TWO).getRemainder().equals(BigInt.ZERO)).isFalse();
     }
+
+    @Test
+    public void shouldComputePower() throws Exception {
+        BigInt bigInt = new BigInt(436546);
+        BigInt result5 = new BigInt("15854409307425103833113682976");
+        BigInt result7 = new BigInt("3021412992681544411638024413353479385216");
+
+        assertThat(bigInt.pow(5)).isEqualTo(result5);
+        assertThat(bigInt.pow(7)).isEqualTo(result7);
+    }
+
+    @Test
+    public void shouldComputePower2() throws Exception {
+        BigInt bigInt = new BigInt(13);
+        BigInt result = new BigInt("113646178932168156590832063401930193308816246875867711645436816520209579444954138804100151624139917235781981573244918696498125093563940369939569290607407990694476917947091933079612787004229755105457901414544866289295781776362444762454164511309967325358514401702203942469313319973429957");
+
+        assertThat(bigInt.pow(255)).isEqualTo(result);
+    }
 }
