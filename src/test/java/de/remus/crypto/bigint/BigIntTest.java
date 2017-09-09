@@ -627,4 +627,17 @@ public class BigIntTest {
         assertThat(a.shiftRight(1)).isEqualTo(b);
     }
 
+    @Test
+    public void randomOddShouldBeOdd() throws Exception {
+        BigInt randomOdd = BigInt.getRandomOdd(256);
+
+        assertThat(randomOdd.divide(BigInt.TWO).getRemainder().equals(BigInt.ZERO)).isFalse();
+    }
+
+    @Test
+    public void randomOddShouldBeOdd2() throws Exception {
+        BigInt randomOdd = BigInt.getRandomOdd(257);
+
+        assertThat(randomOdd.divide(BigInt.TWO).getRemainder().equals(BigInt.ZERO)).isFalse();
+    }
 }

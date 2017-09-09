@@ -3,6 +3,7 @@ package de.remus.crypto.bigint;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -25,12 +26,16 @@ public class BigInt {
     public final static BigInt FOURTEEN = new BigInt(14);
     public final static BigInt FIFTEEN = new BigInt(15);
     public final static BigInt SIXTEEN = new BigInt(16);
+
+    private final static char[] hexArray = "0123456789abcdef".toCharArray();
+
     private final static int digitsPerCell = 8;
     private final static int size = 256;
     private final long base = (long) Math.pow(10, 8);
     private int sign = 1;
     private int sPart = 0;
     private long[] cells = new long[size];
+
 
     public BigInt() {
     }
@@ -131,6 +136,40 @@ public class BigInt {
         }
 
         return sum;
+    }
+
+    public static BigInt getRandomOdd(int lengthInBits) {
+        int lengthInBytes = lengthInBits / 8;
+        int setBitsOfUpperByte = lengthInBits % 8;
+        if (setBitsOfUpperByte > 0) {
+            lengthInBytes++;
+        }
+        byte[] bytes = new byte[lengthInBytes];
+        Random random = new Random();
+        random.nextBytes(bytes);
+        if (setBitsOfUpperByte > 0) {
+            byte upperByte = bytes[0];
+            for (int i = 0; i < 8 - setBitsOfUpperByte; i++) {
+                upperByte = (byte) (upperByte & ~(1 << 7 - i));
+            }
+            upperByte = (byte) (upperByte | 1 << setBitsOfUpperByte - 1);
+            bytes[0] = upperByte;
+        } else {
+            bytes[0] = (byte) (bytes[0] | 1 << 7);
+        }
+        bytes[lengthInBytes - 1] = (byte) (bytes[lengthInBytes - 1] | 1);
+        String hex = bytesToHex(bytes);
+        return BigInt.fromHexString(hex);
+    }
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 
     public static BigInt pow(BigInt base, int exp) {
