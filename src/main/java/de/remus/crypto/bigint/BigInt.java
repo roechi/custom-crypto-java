@@ -608,5 +608,23 @@ public class BigInt {
         }
         return result;
     }
+
+    public BigInt powMod(int exp, BigInt mod) {
+        return pow(exp).mod(mod);
+    }
+
+    public BigInt powMod(BigInt exp, BigInt mod) {
+        BigInt result = ONE;
+        BigInt t = new BigInt(this);
+        while (exp.compare(ZERO) > 0) {
+            if (exp.mod(TWO).equals(ONE)) {
+                result = result.multiply(t).mod(mod);
+            }
+            t = t.multiply(t).mod(mod);
+            exp = exp.divide(TWO).getDivResult();
+        }
+        return result;
+    }
+
 }
 

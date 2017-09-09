@@ -658,4 +658,33 @@ public class BigIntTest {
 
         assertThat(bigInt.pow(255)).isEqualTo(result);
     }
+
+    @Test
+    public void shouldComputePowMod() throws Exception {
+        BigInt base = new BigInt(5);
+        int exp = 430;
+        BigInt mod = new BigInt(4439);
+        BigInt expected = new BigInt(4181);
+
+        assertThat(base.powMod(exp, mod)).isEqualTo(expected);
+    }
+
+    @Test
+    public void shouldComputePowMod2() throws Exception {
+        BigInt base = new BigInt("57896044618658097711785492504343953926634992332820282019728792003956564819967");
+
+        assertThat(base.powMod(base, base)).isEqualTo(BigInt.ZERO);
+    }
+
+
+    @Test
+    public void shouldComputePowMod3() throws Exception {
+        BigInt base = new BigInt("57896044618658097711785492504343953926634992332820282019728792003956564819967");
+        BigInt exp = new BigInt("23412354123451234513454354235134514353");
+        BigInt mod = new BigInt("3453453452345134513");
+        BigInt expected = new BigInt("2985318623638209081");
+
+        assertThat(base.powMod(exp, mod)).isEqualTo(expected);
+    }
+
 }
