@@ -139,6 +139,9 @@ public class BigInt {
     }
 
     public static BigInt getRandomOdd(int lengthInBits) {
+        if (lengthInBits == 0) {
+            return ZERO;
+        }
         int lengthInBytes = lengthInBits / 8;
         int setBitsOfUpperByte = lengthInBits % 8;
         if (setBitsOfUpperByte > 0) {
@@ -626,5 +629,238 @@ public class BigInt {
         return result;
     }
 
+    public boolean isPrimeFermat(int testRounds) {
+        if (equals(ZERO) || equals(ONE)) {
+            return false;
+        }
+        if (equals(TWO)) {
+            return true;
+        }
+        if (isEven()) {
+            return false;
+        }
+        BigInt upperBound = this.subtract(TWO);
+        Random random = new Random();
+        for (int i = 0; i < testRounds; i++) {
+            if (witnessFermat(this, upperBound, random)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean witnessFermat(BigInt number, BigInt upperBound, Random random) {
+        if (compare(THREE) == 1) {
+            int bitLength = upperBound.getBitLength();
+            BigInt randomBigInt = upperBound;
+            while (randomBigInt.compare(upperBound) == 1 || randomBigInt.equals(upperBound) || randomBigInt.equals(ZERO)) {
+                randomBigInt = getRandomOdd(random.nextInt(bitLength));
+                randomBigInt = randomBigInt.subtract(new BigInt(random.nextInt() % 2));
+                if (randomBigInt.compare(THREE) == -1) {
+                    randomBigInt = randomBigInt.add(TWO);
+                }
+            }
+            return testForPrimeFermat(number, randomBigInt);
+        }
+        return false;
+    }
+
+    private boolean testForPrimeFermat(BigInt number, BigInt randomBigInt) {
+        return !randomBigInt.gcd(number).equals(ONE) || !randomBigInt.powMod(number.subtract(ONE), number).equals(ONE);
+    }
+
+    public boolean isPrimeEuler(int testRounds) {
+        if (equals(ZERO) || equals(ONE)) {
+            return false;
+        }
+        if (equals(TWO)) {
+            return true;
+        }
+        if (isEven()) {
+            return false;
+        }
+        BigInt upperBound = this.subtract(ONE);
+        Random random = new Random();
+        for (int i = 0; i < testRounds; i++) {
+            if (witnessEuler(this, upperBound, random)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean witnessEuler(BigInt number, BigInt upperBound, Random random) {
+        if (compare(THREE) == 1) {
+            int bitLength = upperBound.getBitLength();
+            BigInt randomBigInt = upperBound;
+            while (randomBigInt.compare(upperBound) == 1 || randomBigInt.equals(upperBound) || randomBigInt.equals(ZERO)) {
+                randomBigInt = getRandomOdd(random.nextInt(bitLength));
+                randomBigInt = randomBigInt.subtract(new BigInt(random.nextInt() % 2));
+                if (randomBigInt.compare(FOUR) == -1) {
+                    randomBigInt = randomBigInt.add(THREE);
+                }
+            }
+            return testForPrimeEuler(number, randomBigInt);
+        }
+        return false;
+    }
+
+    private boolean testForPrimeEuler(BigInt number, BigInt base) {
+        if (base.gcd(number).equals(ONE)) {
+            BigInt tmp = base.powMod(number.subtract(ONE).divide(TWO).getDivResult(), number);
+            return !(tmp.equals(ONE) || tmp.equals(negative(ONE)) || tmp.equals(number.subtract(ONE)));
+        } else {
+            return true;
+        }
+    }
+
+    public boolean isPrimeMR(int testRounds) {
+        if (equals(ZERO) || equals(ONE)) {
+            return false;
+        }
+        if (equals(TWO)) {
+            return true;
+        }
+        if (isEven()) {
+            return false;
+        }
+        BigInt upperBound = this.subtract(ONE);
+        Random random = new Random();
+        for (int i = 0; i < testRounds; i++) {
+            if (witnessMR(this, upperBound, random)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean witnessMR(BigInt number, BigInt upperBound, Random random) {
+        if (number.compare(THREE) == 1) {
+            int bitLength = upperBound.getBitLength();
+            BigInt randomBigInt = upperBound;
+            while (randomBigInt.compare(upperBound) == 1 || randomBigInt.equals(upperBound) || randomBigInt.equals(ZERO)) {
+                randomBigInt = getRandomOdd(random.nextInt(bitLength));
+                randomBigInt = randomBigInt.subtract(new BigInt(random.nextInt() % 2));
+                if (randomBigInt.compare(TWO) == -1) {
+                    randomBigInt = randomBigInt.add(TWO);
+                }
+            }
+            return testForPrimeMR(number, randomBigInt);
+        }
+        return false;
+    }
+
+    private boolean testForPrimeMR(BigInt number, BigInt base) {
+        if (base.gcd(number).equals(ONE)) {
+            BigInt d = number.subtract(ONE);
+            int s = 0;
+            while (d.isEven()) {
+                d = d.shiftRight(1);
+                s++;
+            }
+            BigInt value = base.powMod(d, number);
+            if (value.abs().equals(ONE)) {
+                return false;
+            } else {
+                for (int i = 0; i < s; i++) {
+                    if (value.equals(negative(ONE)) || value.equals(number.subtract(ONE))) {
+                        return false;
+                    }
+                    value = value.powMod(value, number);
+                    if (value.equals(ONE)) {
+                        return true;
+                    }
+                }
+                return !(value.equals(negative(ONE)) || value.equals(number.subtract(ONE)));
+            }
+        } else {
+            return true;
+        }
+    }
+
+
+    private boolean isEven() {
+        return cells[0] % 2 == 0;
+    }
+
+    public int getBitLength() {
+        String hexString = toHexString();
+        return hexToBinary(hexString).length();
+    }
+
+    private String hexToBinary(String hex) {
+        byte[] bytes = hexStringToByteArray(hex);
+        return toBinary(bytes);
+    }
+
+    private byte[] hexStringToByteArray(String hex) {
+        int l = hex.length();
+        byte[] data = new byte[l / 2];
+        for (int i = 0; i < l; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
+                    + Character.digit(hex.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
+    private String toBinary(byte[] bytes) {
+        StringBuilder sb = new StringBuilder(bytes.length * Byte.SIZE);
+        for (int i = 0; i < Byte.SIZE * bytes.length; i++)
+            sb.append((bytes[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0' : '1');
+        return sb.toString();
+    }
+
+    public BigInt gcd(BigInt other) {
+        BigInt a = new BigInt(this);
+        BigInt b = new BigInt(other);
+        if (a.equals(ZERO) && b.equals(ZERO)) {
+            throw new IllegalArgumentException("Both numbers must not be ZERO");
+        }
+        if (a.equals(ZERO)) {
+            return b;
+        }
+        if (b.equals(ZERO)) {
+            return a;
+        }
+        if (a.isNegative()) {
+            a.setSign(1);
+        }
+        if (b.isNegative()) {
+            b.setSign(1);
+        }
+
+        while (Math.abs(a.getsPart() - b.getsPart()) > 0) {
+            if (a.compare(b) == -1) {
+                BigInt help = a;
+                a = b;
+                b = help;
+            }
+            a = a.mod(b);
+        }
+        long scale = (long) Math.pow(10, digitsPerCell / 2);
+        while (Math.abs(a.getCells()[a.getsPart()] - b.getCells()[b.getsPart()]) / scale > 0) {
+            if (a.compare(b) == -1) {
+                BigInt help = a;
+                a = b;
+                b = help;
+            }
+            a = a.mod(b);
+        }
+
+
+        while (b.compare(ZERO) == 1) {
+            if (b.compare(a) == -1) {
+                BigInt help = a;
+                a = b;
+                b = help;
+            }
+            b = b.subtract(a);
+        }
+
+        return a;
+    }
 }
 

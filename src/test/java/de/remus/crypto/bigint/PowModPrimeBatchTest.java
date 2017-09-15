@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(DataProviderRunner.class)
-public class PowModBatchTest {
+public class PowModPrimeBatchTest {
 
     Logger logger = Logger.getLogger(this.getClass());
 
@@ -111,7 +111,7 @@ public class PowModBatchTest {
             String decStringM = "";
 
 
-            InputStream fis = new FileInputStream("src/test/resources/pow_mod_tests.txt");
+            InputStream fis = new FileInputStream("src/test/resources/pow_mod_prime_tests.txt");
             InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
             BufferedReader br = new BufferedReader(isr);
             List<TestData> dataList = new ArrayList<>();

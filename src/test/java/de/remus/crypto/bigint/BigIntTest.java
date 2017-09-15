@@ -687,4 +687,55 @@ public class BigIntTest {
         assertThat(base.powMod(exp, mod)).isEqualTo(expected);
     }
 
+    @Test
+    public void shouldBePrime() throws Exception {
+        BigInt bigInt = new BigInt(7);
+
+        assertThat(bigInt.isPrimeFermat(10)).isTrue();
+        assertThat(bigInt.isPrimeEuler(10)).isTrue();
+        assertThat(bigInt.isPrimeMR(10)).isTrue();
+    }
+
+    @Test
+    public void shouldNotBePrime() throws Exception {
+        BigInt bigInt = new BigInt(12);
+
+        assertThat(bigInt.isPrimeFermat(10)).isFalse();
+        assertThat(bigInt.isPrimeEuler(10)).isFalse();
+        assertThat(bigInt.isPrimeMR(10)).isFalse();
+    }
+
+    @Test
+    public void shouldNotBePrime2() throws Exception {
+        BigInt bigInt = new BigInt(15);
+
+        assertThat(bigInt.isPrimeFermat(10)).isFalse();
+        assertThat(bigInt.isPrimeEuler(10)).isFalse();
+        assertThat(bigInt.isPrimeMR(10)).isFalse();
+    }
+
+    @Test
+    public void shouldBePrime2() throws Exception {
+        BigInt bigInt = new BigInt(982451653);
+
+        assertThat(bigInt.isPrimeFermat(10)).isTrue();
+        assertThat(bigInt.isPrimeEuler(10)).isTrue();
+        assertThat(bigInt.isPrimeMR(10)).isTrue();
+    }
+
+    @Test
+    public void shouldComputeGcd() throws Exception {
+        BigInt a = new BigInt(108);
+        BigInt b = new BigInt(30);
+
+        assertThat(a.gcd(b)).isEqualTo(new BigInt(6));
+    }
+
+    @Test
+    public void shouldComputeGcd2() throws Exception {
+        BigInt a = new BigInt(32);
+        BigInt b = new BigInt(5);
+
+        assertThat(a.gcd(b)).isEqualTo(new BigInt(1));
+    }
 }
