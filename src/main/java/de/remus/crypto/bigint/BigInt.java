@@ -781,6 +781,42 @@ public class BigInt {
         }
     }
 
+    public boolean isPrimeDiv(BigInt[] bases) {
+        boolean isPrime = true;
+        for (BigInt i : bases) {
+            if (this.divide(i).getRemainder().equals(ZERO)) {
+                isPrime = false;
+            }
+        }
+        return isPrime;
+    }
+
+    public boolean isPrimeFermat(BigInt[] bases) {
+        for (BigInt b : bases) {
+            if (testForPrimeFermat(this, b)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isPrimeEuler(BigInt[] bases) {
+        for (BigInt b : bases) {
+            if (testForPrimeEuler(this, b)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isPrimeMR(BigInt[] bases) {
+        for (BigInt b : bases) {
+            if (testForPrimeMR(this, b)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private boolean isEven() {
         return cells[0] % 2 == 0;
@@ -840,8 +876,19 @@ public class BigInt {
             }
             a = a.mod(b);
         }
+        if (a.equals(ZERO)) {
+            return b;
+        }
+        if (b.equals(ZERO)) {
+            return a;
+        }
         long scale = (long) Math.pow(10, digitsPerCell / 2);
-        while (Math.abs(a.getCells()[a.getsPart()] - b.getCells()[b.getsPart()]) / scale > 0) {
+        if (a.compare(b) == -1) {
+            BigInt help = a;
+            a = b;
+            b = help;
+        }
+        while (b.mul10(1).compare(a) == -1) {
             if (a.compare(b) == -1) {
                 BigInt help = a;
                 a = b;
@@ -849,8 +896,11 @@ public class BigInt {
             }
             a = a.mod(b);
         }
-
-
+        if (a.compare(b) == -1) {
+            BigInt help = a;
+            a = b;
+            b = help;
+        }
         while (b.compare(ZERO) == 1) {
             if (b.compare(a) == -1) {
                 BigInt help = a;
