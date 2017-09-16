@@ -27,14 +27,14 @@ public class BigInt {
     public final static BigInt FIFTEEN = new BigInt(15);
     public final static BigInt SIXTEEN = new BigInt(16);
 
-    private final static char[] hexArray = "0123456789abcdef".toCharArray();
+    private final static char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
 
-    private final static int digitsPerCell = 8;
-    private final static int size = 256;
+    private final static int DIGITS_PER_CELL = 8;
+    private final static int SIZE = 256;
     private final long base = (long) Math.pow(10, 8);
     private int sign = 1;
     private int sPart = 0;
-    private long[] cells = new long[size];
+    private long[] cells = new long[SIZE];
 
 
     public BigInt() {
@@ -48,15 +48,15 @@ public class BigInt {
         } else {
             trimmed = s;
         }
-        int remainder = trimmed.length() % digitsPerCell;
-        int numberOfCells = trimmed.length() / digitsPerCell;
+        int remainder = trimmed.length() % DIGITS_PER_CELL;
+        int numberOfCells = trimmed.length() / DIGITS_PER_CELL;
         sPart = remainder > 0 ? numberOfCells : numberOfCells - 1;
         IntStream
                 .range(0, numberOfCells)
                 .forEach(i -> getCells()[i] = readCellFromString(trimmed, i));
 
         if (remainder > 0) {
-            getCells()[sPart] = Long.valueOf(trimmed.substring(0, trimmed.length() - numberOfCells * digitsPerCell));
+            getCells()[sPart] = Long.valueOf(trimmed.substring(0, trimmed.length() - numberOfCells * DIGITS_PER_CELL));
         }
     }
 
@@ -71,7 +71,7 @@ public class BigInt {
             number /= base;
         } while (number > 0);
 
-        if (longs.size() > size) {
+        if (longs.size() > SIZE) {
             throw new IllegalArgumentException("Number too large.");
         }
         IntStream.range(0, longs.size()).forEach(i -> cells[i] = longs.get(i));
@@ -169,8 +169,8 @@ public class BigInt {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
     }
@@ -262,14 +262,14 @@ public class BigInt {
     }
 
     private void reduce() {
-        IntStream.range(0, size).forEach(i -> {
+        IntStream.range(0, SIZE).forEach(i -> {
             if (cells[i] != 0)
                 sPart = i;
         });
     }
 
     private Long readCellFromString(String s, int i) {
-        return Long.valueOf(s.substring(s.length() - ((i + 1) * digitsPerCell), s.length() - (i * digitsPerCell)));
+        return Long.valueOf(s.substring(s.length() - ((i + 1) * DIGITS_PER_CELL), s.length() - (i * DIGITS_PER_CELL)));
     }
 
     @Override
@@ -285,7 +285,7 @@ public class BigInt {
     }
 
     private String fillZeros(String s) {
-        String zeroString = IntStream.range(0, digitsPerCell - s.length()).mapToObj(i -> "0").reduce((a, b) -> a + b).orElse("");
+        String zeroString = IntStream.range(0, DIGITS_PER_CELL - s.length()).mapToObj(i -> "0").reduce((a, b) -> a + b).orElse("");
         return zeroString + s;
     }
 
@@ -301,7 +301,7 @@ public class BigInt {
             return negative(negative(other).subtract(this));
         }
 
-        long[] resultCells = new long[size];
+        long[] resultCells = new long[SIZE];
         int highestSPart = sPart > other.getsPart() ? sPart : other.getsPart();
 
         IntStream.rangeClosed(0, highestSPart).forEach(i -> {
@@ -319,7 +319,7 @@ public class BigInt {
                 sum = sum % base;
             }
             resultCells[i] += sum;
-            if (i < size - 1) {
+            if (i < SIZE - 1) {
                 resultCells[i + 1] += carryOver;
             } else if (carryOver > 0) {
                 throw new OverFlowException();
@@ -334,7 +334,7 @@ public class BigInt {
     }
 
     public int getSize() {
-        return size;
+        return SIZE;
     }
 
     public int getsPart() {
@@ -385,7 +385,7 @@ public class BigInt {
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 long temp = cells[j] * other.cells[i];
-                String zeros = IntStream.range(0, (i + j) * digitsPerCell).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
+                String zeros = IntStream.range(0, (i + j) * DIGITS_PER_CELL).mapToObj($ -> "0").reduce((a, b) -> a + b).orElse("");
                 anInt = anInt.add(new BigInt(temp + zeros));
             }
         }
@@ -882,7 +882,7 @@ public class BigInt {
         if (b.equals(ZERO)) {
             return a;
         }
-        long scale = (long) Math.pow(10, digitsPerCell / 2);
+        long scale = (long) Math.pow(10, DIGITS_PER_CELL / 2);
         if (a.compare(b) == -1) {
             BigInt help = a;
             a = b;

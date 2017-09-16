@@ -1,0 +1,101 @@
+#
+# Tests auf Pseudoprimzahlen fuer den Euler-Test
+#
+# # Kommentar bis Zeilenende
+# t is the title of the tes
+# a ist die Basis fuer das Versagen
+#
+# Wenn die Basis leer ist, dann handelt es sich um eine
+# absolute Pseudoprimzahl, bei der alle Basen a scheitern,
+# wenn sie teilerfremd zu p sind, d.h. nur bei ggT(a,p)<>0
+# liegt in a ein Zeuge vor
+#
+# p ist keine Primzahl
+#
+# Siehe https://de.wikibooks.org/wiki/Pseudoprimzahlen:_Tabelle_Pseudoprimzahlen_(15_-_4999)
+# https://oeis.org/A033181
+#
+# Version 6  28/06/2017
+#
+t=Euler-PseudoPrime-1
+a=128
+p=341
+#--------------------------
+t=Euler-PseudoPrime-2
+a=1172
+p=1681
+#--------------------------
+t=Euler-PseudoPrime-3
+a=315
+p=2449
+#--------------------------
+t=Euler-PseudoPrime-4
+a=1459
+p=4371
+#--------------------------
+t=Euler-PseudoPrime-5
+a=1842
+p=4997
+#--------------------------
+t=Euler-PseudoPrime-6
+a=2169
+p=4961
+#--------------------------
+# Absolute Pseudoprimzahl
+t=Euler-PseudoPrime-7
+a=
+p=1729
+#--------------------------
+t=Euler-PseudoPrime-8
+# Absolute Pseudoprimzahl
+a=
+p=2465
+#--------------------------
+t=Euler-PseudoPrime-9
+# Absolute Pseudoprimzahl
+a=
+p=75361
+#--------------------------
+t=Euler-PseudoPrime-10
+# Absolute Pseudoprimzahl
+a=
+p=162401
+#--------------------------
+t=Euler-PseudoPrime-11
+# Absolute Pseudoprimzahl
+a=
+p=488881
+#--------------------------
+t=Euler-PseudoPrime-12
+# Absolute Pseudoprimzahl
+a=
+p=997633
+#--------------------------
+t=Euler-PseudoPrime-13
+# Absolute Pseudoprimzahl
+a=
+p=3057601
+#--------------------------
+t=Euler-PseudoPrime-14
+# Absolute Pseudoprimzahl
+a=
+p=4903921
+#--------------------------
+t=Euler-PseudoPrime-15
+# Absolute Pseudoprimzahl?
+# nicht verifiziert
+a=
+p=173032371289
+#--------------------------
+t=Euler-PseudoPrime-16
+# Keine Absolute Pseudoprimzahl
+# nicht verifiziert
+a=
+p=197531244744661
+#--------------------------
+t=Euler-PseudoPrime-17
+# Absolute Pseudoprimzahl?
+# nicht verifiziert
+a=
+p=973694665856161
+#--------------------------
