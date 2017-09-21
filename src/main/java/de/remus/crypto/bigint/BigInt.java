@@ -613,10 +613,22 @@ public class BigInt {
     }
 
     public BigInt powMod(int exp, BigInt mod) {
-        return pow(exp).mod(mod);
+        return this.powMod(new BigInt(exp), mod);
     }
 
     public BigInt powMod(BigInt exp, BigInt mod) {
+        if (exp.equals(ZERO)) {
+            return ONE.mod(mod);
+        }
+        if (exp.equals(ONE)) {
+            return this.mod(mod);
+        }
+        BigInt modulus = this.mod(mod);
+        return modulus.powModInternal(exp, mod);
+    }
+
+
+    private BigInt powModInternal(BigInt exp, BigInt mod) {
         BigInt result = ONE;
         BigInt t = new BigInt(this);
         while (exp.compare(ZERO) > 0) {
@@ -912,5 +924,50 @@ public class BigInt {
 
         return a;
     }
+
+    public GCDLinearCombination enhancedGcd(BigInt other) {
+        BigInt a = new BigInt(this);
+        BigInt b = new BigInt(other);
+        BigInt u = ONE;
+        BigInt v = ZERO;
+        BigInt s = ZERO;
+        BigInt t = ONE;
+
+        BigInt uO, vO, q;
+        BigIntDiv dv = this.divideBoute(other);
+        q = dv.getDivResult();
+
+        while (!b.equals(ZERO)) {
+            uO = u;
+            vO = v;
+
+            u = new BigInt(s);
+            v = new BigInt(t);
+
+            s = uO.subtract(q.multiply(s));
+            t = vO.subtract(q.multiply(t));
+
+            a = b;
+            b = dv.getRemainder();
+
+            if (!b.equals(ZERO)) {
+                dv = a.divideBoute(b);
+            }
+
+            q = dv.getDivResult();
+
+        }
+
+        return new GCDLinearCombination(a, u, v);
+    }
+
+
+    public BigInt modInverse(BigInt mod) {
+        GCDLinearCombination gcdLinearCombination = enhancedGcd(mod);
+
+        return gcdLinearCombination.getU();
+    }
+
+
 }
 

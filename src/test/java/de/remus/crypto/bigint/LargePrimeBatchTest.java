@@ -4,7 +4,6 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,7 +19,7 @@ public class LargePrimeBatchTest {
 
     Logger logger = Logger.getLogger(this.getClass());
 
-    @Ignore
+
     @Test
     @UseDataProvider(value = "testData", location = TestData.class)
     public void testPrimeFermat(TestData testData) throws Exception {
@@ -35,7 +34,7 @@ public class LargePrimeBatchTest {
         assertThat(result).isEqualTo(true);
     }
 
-    @Ignore
+
     @Test
     @UseDataProvider(value = "testData", location = TestData.class)
     public void testPrimeEuler(TestData testData) throws Exception {
@@ -50,7 +49,7 @@ public class LargePrimeBatchTest {
         assertThat(result).isEqualTo(true);
     }
 
-    @Ignore
+
     @Test
     @UseDataProvider(value = "testData", location = TestData.class)
     public void testPrimeMillerRabin(TestData testData) throws Exception {
