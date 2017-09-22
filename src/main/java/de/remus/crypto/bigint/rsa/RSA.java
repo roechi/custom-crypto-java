@@ -12,9 +12,10 @@ public class RSA {
         BigInt q = ZERO;
         BigInt d = ZERO;
         BigInt check = ZERO;
-        BigInt n, phi;
+        BigInt phi = ZERO;
+        BigInt n;
 
-        while (!check.equals(ONE) || d.compare(ZERO) == -1) {
+        while (!check.equals(ONE)) {
             p = findPrime(10, bitLength - 1);
             q = findPrime(10, bitLength);
 
@@ -22,6 +23,10 @@ public class RSA {
             check = e.gcd(phi);
             d = e.modInverse(phi);
         }
+        if (d.compare(ZERO) == -1) {
+            d = phi.add(d);
+        }
+
         n = p.multiply(q);
 
         PrivateKey privateKey = new PrivateKey(p, q, d, n);
