@@ -26,9 +26,34 @@ public class BigInt {
     public final static BigInt FOURTEEN = new BigInt(14);
     public final static BigInt FIFTEEN = new BigInt(15);
     public final static BigInt SIXTEEN = new BigInt(16);
-
+    public final static BigInt SEVENTEEN = new BigInt(17);
+    public final static BigInt NINETEEN = new BigInt(19);
+    public final static BigInt TWENTYTHREE = new BigInt(23);
+    public final static BigInt TWENTYNINE = new BigInt(29);
+    public final static BigInt THIRTYONE = new BigInt(31);
+    public final static BigInt THIRTYSEVEN = new BigInt(37);
+    public final static BigInt FOURTYONE = new BigInt(41);
+    public final static BigInt FOURTYTHREE = new BigInt(43);
+    public final static BigInt FOURTYSEVEN = new BigInt(47);
+    public final static BigInt FIFTYTHREE = new BigInt(53);
+    public final static BigInt FIFTYNINE = new BigInt(59);
+    public final static BigInt SIXTYONE = new BigInt(61);
+    public final static BigInt SIXTYSEVEN = new BigInt(67);
+    public final static BigInt SEVENTYONE = new BigInt(71);
+    public final static BigInt SEVENTYTHREE = new BigInt(73);
+    public final static BigInt SEVENTYNINE = new BigInt(79);
+    public final static BigInt EIGHTYTHREE = new BigInt(83);
+    public final static BigInt EIGHTYNINE = new BigInt(89);
+    public final static BigInt NINETYSEVEN = new BigInt(97);
+    static final BigInt[] PRIMES_BELOW_THIRTYEIGHT = {
+            TWO, THREE, FIVE, SEVEN, ELEVEN, THIRTEEN, SEVENTEEN, NINETEEN, TWENTYTHREE, TWENTYNINE, THIRTYONE, THIRTYSEVEN
+    };
+    static final BigInt[] PRIMES_BELOW_ONEHUNDRED = {
+            TWO, THREE, FIVE, SEVEN, ELEVEN, THIRTEEN, SEVENTEEN, NINETEEN, TWENTYTHREE, TWENTYNINE, THIRTYONE, THIRTYSEVEN,
+            FOURTYONE, FOURTYTHREE, FOURTYSEVEN, FIFTYTHREE, FIFTYNINE, SIXTYONE, SIXTYSEVEN, SEVENTYONE, SEVENTYTHREE,
+            SEVENTYNINE, EIGHTYTHREE, EIGHTYNINE, NINETYSEVEN
+    };
     private final static char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
-
     private final static int DIGITS_PER_CELL = 8;
     private final static int SIZE = 256;
     private final long base = (long) Math.pow(10, 8);
@@ -651,6 +676,19 @@ public class BigInt {
         if (isEven()) {
             return false;
         }
+        if (!isPrimeDiv(PRIMES_BELOW_ONEHUNDRED)) {
+            return false;
+        }
+        for (BigInt b : PRIMES_BELOW_THIRTYEIGHT) {
+            if (b.equals(this)) {
+                return true;
+            }
+            if (b.compare(THREE) == 1 && b.compare(this.subtract(TWO)) <= 0) {
+                if (testForPrimeFermat(this, b)) {
+                    return false;
+                }
+            }
+        }
         BigInt upperBound = this.subtract(TWO);
         Random random = new Random();
         for (int i = 0; i < testRounds; i++) {
@@ -691,6 +729,19 @@ public class BigInt {
         }
         if (isEven()) {
             return false;
+        }
+        if (!isPrimeDiv(PRIMES_BELOW_ONEHUNDRED)) {
+            return false;
+        }
+        for (BigInt b : PRIMES_BELOW_THIRTYEIGHT) {
+            if (b.equals(this)) {
+                return true;
+            }
+            if (b.compare(THREE) >= 0 && b.compare(this.subtract(ONE)) >= 0) {
+                if (testForPrimeEuler(this, b)) {
+                    return false;
+                }
+            }
         }
         BigInt upperBound = this.subtract(ONE);
         Random random = new Random();
@@ -738,6 +789,19 @@ public class BigInt {
         if (isEven()) {
             return false;
         }
+        if (!isPrimeDiv(PRIMES_BELOW_ONEHUNDRED)) {
+            return false;
+        }
+        for (BigInt b : PRIMES_BELOW_THIRTYEIGHT) {
+            if (b.equals(this)) {
+                return true;
+            }
+            if (b.compare(THREE) >= 0 && b.compare(this.subtract(ONE)) >= 0) {
+                if (testForPrimeMR(this, b)) {
+                    return false;
+                }
+            }
+        }
         BigInt upperBound = this.subtract(ONE);
         Random random = new Random();
         for (int i = 0; i < testRounds; i++) {
@@ -770,18 +834,19 @@ public class BigInt {
             BigInt d = number.subtract(ONE);
             int s = 0;
             while (d.isEven()) {
-                d = d.shiftRight(1);
+                d = d.divide(TWO).getDivResult();
                 s++;
             }
+            s = s == 0 ? 1 : s;
             BigInt value = base.powMod(d, number);
             if (value.abs().equals(ONE)) {
                 return false;
             } else {
-                for (int i = 0; i < s; i++) {
+                for (int i = 0; i < s - 1; i++) {
                     if (value.equals(negative(ONE)) || value.equals(number.subtract(ONE))) {
                         return false;
                     }
-                    value = value.powMod(value, number);
+                    value = value.multiply(value).mod(number);
                     if (value.equals(ONE)) {
                         return true;
                     }
@@ -796,8 +861,10 @@ public class BigInt {
     public boolean isPrimeDiv(BigInt[] bases) {
         boolean isPrime = true;
         for (BigInt i : bases) {
-            if (this.divide(i).getRemainder().equals(ZERO)) {
-                isPrime = false;
+            if (!i.equals(this)) {
+                if (this.divide(i).getRemainder().equals(ZERO)) {
+                    isPrime = false;
+                }
             }
         }
         return isPrime;

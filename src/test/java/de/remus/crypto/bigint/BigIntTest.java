@@ -679,7 +679,7 @@ public class BigIntTest {
 
     @Test
     public void shouldBePrime() throws Exception {
-        BigInt bigInt = new BigInt(7);
+        BigInt bigInt = new BigInt(13);
 
         assertThat(bigInt.isPrimeFermat(10)).isTrue();
         assertThat(bigInt.isPrimeEuler(10)).isTrue();

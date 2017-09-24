@@ -19,7 +19,6 @@ public class LargePrimeBatchTest {
 
     Logger logger = Logger.getLogger(this.getClass());
 
-
     @Test
     @UseDataProvider(value = "testData", location = TestData.class)
     public void testPrimeFermat(TestData testData) throws Exception {

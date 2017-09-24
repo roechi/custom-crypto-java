@@ -4,7 +4,6 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,7 +19,6 @@ public class PseudoPrimeFermatBatchTest {
 
     Logger logger = Logger.getLogger(this.getClass());
 
-    @Ignore
     @Test
     @UseDataProvider(value = "testData", location = TestData.class)
     public void testNotPrimeFermat(TestData testData) throws Exception {
