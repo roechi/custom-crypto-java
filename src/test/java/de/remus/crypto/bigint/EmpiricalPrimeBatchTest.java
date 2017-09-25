@@ -1,6 +1,7 @@
 package de.remus.crypto.bigint;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.*;
@@ -42,9 +43,10 @@ public class EmpiricalPrimeBatchTest {
     }
 
     @Test
+    @Ignore
     public void testPrimeEmpirical() throws Exception {
         List<BigInt> primes = primesData();
-        int rounds = 1;
+        int rounds = 20;
         float accuracy = 0;
         int runs = 100;
         for (int i = 0; i < runs; i++) {
@@ -64,9 +66,10 @@ public class EmpiricalPrimeBatchTest {
     }
 
     @Test
+    @Ignore
     public void testPseudoPrimeEmpirical() throws Exception {
         List<BigInt> primes = pseudoprimesData();
-        int rounds = 1;
+        int rounds = 20;
         float accuracy = 0;
         int runs = 100;
         for (int i = 0; i < runs; i++) {
@@ -86,9 +89,10 @@ public class EmpiricalPrimeBatchTest {
     }
 
     @Test
+    @Ignore
     public void testStrongPseudoPrimes() throws Exception {
         List<BigInt> primes = strongPseudoPrimes();
-        int rounds = 1;
+        int rounds = 20;
         float accuracy = 0;
         int runs = 100;
         for (int i = 0; i < runs; i++) {
@@ -108,6 +112,7 @@ public class EmpiricalPrimeBatchTest {
     }
 
     @Test
+    @Ignore
     public void millerRabinExperiment() throws Exception {
         List<BigInt> pseudoPrimes = pseudoprimesData();
         List<BigInt> carmichaelNumbers = strongPseudoPrimes();
