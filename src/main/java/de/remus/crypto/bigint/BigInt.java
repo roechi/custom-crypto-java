@@ -535,13 +535,22 @@ public class BigInt {
             qCells[i] = e;
             r = r.subtract(tmp);
             if (i != 0) {
-                r = r.multiply(new BigInt("" + base)).add(new BigInt("" + (sign * cells[i - 1])));
+                if (sign == 1) {
+                    r = r.multiply(new BigInt(base)).add(new BigInt((cells[i - 1])));
+                } else {
+                    r = r.multiply(new BigInt(base)).subtract(new BigInt((cells[i - 1])));
+                }
             }
         }
 
         BigInt q = new BigInt(qCells);
         if (factor != 1) {
             r = r.divide(new BigInt("" + factor)).getDivResult();
+        }
+        String check = r.toString();
+        if (check.indexOf('-') > 0) {
+            check = check.replace('1', '9').replace('-', '9').replace('0', '9');
+            r = new BigInt(check.substring(1));
         }
         return new BigIntDiv(q, r);
     }
@@ -660,7 +669,7 @@ public class BigInt {
             if (exp.mod(TWO).equals(ONE)) {
                 result = result.multiply(t).mod(mod);
             }
-            t = t.multiply(t).mod(mod);
+            t = t.mod(mod).multiply(t.mod(mod));
             exp = exp.divide(TWO).getDivResult();
         }
         return result;

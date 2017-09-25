@@ -20,8 +20,8 @@ public class EmpiricalPrimeBatchTest {
         return testData("src/test/resources/pseudoprimes.txt");
     }
 
-    public static List<BigInt> carmichaelNumbersData() throws IOException {
-        return testData("src/test/resources/carmichael_numbers.txt");
+    public static List<BigInt> strongPseudoPrimes() throws IOException {
+        return testData("src/test/resources/strong_pseudoprimes.txt");
     }
 
     public static List<BigInt> testData(String path) throws IOException {
@@ -44,75 +44,75 @@ public class EmpiricalPrimeBatchTest {
     @Test
     public void testPrimeEmpirical() throws Exception {
         List<BigInt> primes = primesData();
-        int rounds = 50;
+        int rounds = 1;
         float accuracy = 0;
         int runs = 100;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithFermat(primes, true, rounds, "Testing real primes with fermat...");
         }
-        logger.info("Fermat accuracy for primes over " + runs + " runs: " + runs / 100f * accuracy);
+        logger.info("Fermat accuracy for primes over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
         accuracy = 0;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithEuler(primes, true, rounds, "Testing real primes with euler...");
         }
-        logger.info("Euler accuracy for primes over " + runs + " runs: " + runs / 100f * accuracy);
+        logger.info("Euler accuracy for primes over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
         accuracy = 0;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithMR(primes, true, rounds, "Testing real primes with MR...");
         }
-        logger.info("MR accuracy for primes over " + runs + " runs with " + rounds + " probes: " + runs / 100f * accuracy);
+        logger.info("MR accuracy for primes over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
     }
 
     @Test
     public void testPseudoPrimeEmpirical() throws Exception {
         List<BigInt> primes = pseudoprimesData();
-        int rounds = 50;
+        int rounds = 1;
         float accuracy = 0;
         int runs = 100;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithFermat(primes, false, rounds, "Testing pseudo primes with fermat...");
         }
-        logger.info("Fermat accuracy for pseudo primes over " + runs + " runs: " + runs / 100f * accuracy);
+        logger.info("Fermat accuracy for pseudo primes over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
         accuracy = 0;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithEuler(primes, false, rounds, "Testing pseudo primes with euler...");
         }
-        logger.info("Euler accuracy for pseudo primes over " + runs + " runs: " + runs / 100f * accuracy);
+        logger.info("Euler accuracy for pseudo primes over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
         accuracy = 0;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithMR(primes, false, rounds, "Testing pseudo primes with MR...");
         }
-        logger.info("MR accuracy for pseudo primes over " + runs + " runs with " + rounds + " probes: " + runs / 100f * accuracy);
+        logger.info("MR accuracy for pseudo primes over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
     }
 
     @Test
-    public void testCarmichaelEmpirical() throws Exception {
-        List<BigInt> primes = carmichaelNumbersData();
-        int rounds = 50;
+    public void testStrongPseudoPrimes() throws Exception {
+        List<BigInt> primes = strongPseudoPrimes();
+        int rounds = 1;
         float accuracy = 0;
         int runs = 100;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithFermat(primes, false, rounds, "Testing carmichael numbers with fermat...");
         }
-        logger.info("Fermat accuracy for carmichael numbers over " + runs + " runs: " + runs / 100f * accuracy);
+        logger.info("Fermat accuracy for carmichael numbers over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
         accuracy = 0;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithEuler(primes, false, rounds, "Testing carmichael numbers with euler...");
         }
-        logger.info("Euler accuracy for carmichael numbers over " + runs + " runs: " + runs / 100f * accuracy);
+        logger.info("Euler accuracy for carmichael numbers over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
         accuracy = 0;
         for (int i = 0; i < runs; i++) {
             accuracy += testWithMR(primes, false, rounds, "Testing carmichael numbers with MR...");
         }
-        logger.info("MR accuracy for carmichael numbers over " + runs + " runs with " + rounds + " probes: " + runs / 100f * accuracy);
+        logger.info("MR accuracy for carmichael numbers over " + runs + " runs with " + rounds + " probes: " + accuracy / runs);
     }
 
     @Test
     public void millerRabinExperiment() throws Exception {
         List<BigInt> pseudoPrimes = pseudoprimesData();
-        List<BigInt> carmichaelNumbers = carmichaelNumbersData();
+        List<BigInt> carmichaelNumbers = strongPseudoPrimes();
         pseudoPrimes.addAll(carmichaelNumbers);
-        int runs = 10;
+        int runs = 100;
         int fails = 0;
         int count = 0;
         for (int i = 1; i <= 19; i++) {
