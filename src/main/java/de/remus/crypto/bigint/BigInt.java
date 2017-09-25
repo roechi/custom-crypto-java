@@ -798,7 +798,7 @@ public class BigInt {
         if (isEven()) {
             return false;
         }
-        if (!isPrimeDiv(PRIMES_BELOW_ONEHUNDRED)) {
+        /*if (!isPrimeDiv(PRIMES_BELOW_ONEHUNDRED)) {
             return false;
         }
         for (BigInt b : PRIMES_BELOW_THIRTYEIGHT) {
@@ -810,7 +810,7 @@ public class BigInt {
                     return false;
                 }
             }
-        }
+        }*/
         BigInt upperBound = this.subtract(ONE);
         Random random = new Random();
         for (int i = 0; i < testRounds; i++) {
