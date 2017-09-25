@@ -54,11 +54,11 @@ public class RSAIncorrectEncryptionBatchTest {
         BigInt I = new BigInt(iEncr);
 
         assertThat(RSA.encrypt(publicKey, g).toString()).isEqualTo(gEncr);
-        assertThat(RSA.decrypt(privateKey, G).toString()).isNotEqualTo(gPlain);
+        assertThat(RSA.decrypt(privateKey, G).toString().equals(gPlain)).isEqualTo(testData.isDecrGPossible());
         assertThat(RSA.encrypt(publicKey, h).toString()).isEqualTo(hEncr);
-        assertThat(RSA.decrypt(privateKey, H).toString()).isNotEqualTo(hPlain);
+        assertThat(RSA.decrypt(privateKey, H).toString().equals(hPlain)).isEqualTo(testData.isDecrHPossible());
         assertThat(RSA.encrypt(publicKey, i).toString()).isEqualTo(iEncr);
-        assertThat(RSA.decrypt(privateKey, I).toString()).isNotEqualTo(iPlain);
+        assertThat(RSA.decrypt(privateKey, I).toString().equals(iPlain)).isEqualTo(testData.isDecrIPossible());
     }
 
 
@@ -76,6 +76,9 @@ public class RSAIncorrectEncryptionBatchTest {
         String decStringHEncr;
         String decStringIPlain;
         String decStringIEncr;
+        boolean decrGPossible;
+        boolean decrHPossible;
+        boolean decrIPossible;
 
 
         public TestData(
@@ -91,7 +94,10 @@ public class RSAIncorrectEncryptionBatchTest {
                 String decStringHPlain,
                 String decStringHEncr,
                 String decStringIPlain,
-                String decStringIEncr
+                String decStringIEncr,
+                boolean decrGPossible,
+                boolean decrHPossible,
+                boolean decrIPossible
         ) {
             this.testName = testName;
             this.decStringP = decStringP;
@@ -106,6 +112,9 @@ public class RSAIncorrectEncryptionBatchTest {
             this.decStringHEncr = decStringHEncr;
             this.decStringIPlain = decStringIPlain;
             this.decStringIEncr = decStringIEncr;
+            this.decrGPossible = decrGPossible;
+            this.decrHPossible = decrHPossible;
+            this.decrIPossible = decrIPossible;
         }
 
         @DataProvider
@@ -118,19 +127,23 @@ public class RSAIncorrectEncryptionBatchTest {
             BufferedReader br = new BufferedReader(isr);
             List<TestData> dataList = new ArrayList<>();
 
+            String decStringP = "";
+            String decStringQ = "";
+            String decStringF = "";
+            String decStringE = "";
+            String decStringD = "";
+            String decStringN = "";
+            String decStringGPlain = "";
+            String decStringGEncr = "";
+            String decStringHPlain = "";
+            String decStringHEncr = "";
+            String decStringIPlain = "";
+            String decStringIEncr = "";
+            boolean decrGPossible = false;
+            boolean decrHPossible = false;
+            boolean decrIPossible = false;
+
             while ((line = br.readLine()) != null) {
-                String decStringP = "";
-                String decStringQ = "";
-                String decStringF = "";
-                String decStringE = "";
-                String decStringD = "";
-                String decStringN = "";
-                String decStringGPlain = "";
-                String decStringGEncr = "";
-                String decStringHPlain = "";
-                String decStringHEncr = "";
-                String decStringIPlain = "";
-                String decStringIEncr = "";
 
                 if (line.charAt(0) != '#') {
                     switch (line.charAt(0)) {
@@ -160,18 +173,36 @@ public class RSAIncorrectEncryptionBatchTest {
                             break;
                         case 'G':
                             decStringGEncr = line.substring(2);
+                            line = br.readLine();
+                            if (line.charAt(0) == '+') {
+                                decrGPossible = true;
+                            } else {
+                                decrGPossible = false;
+                            }
                             break;
                         case 'h':
                             decStringHPlain = line.substring(2);
                             break;
                         case 'H':
                             decStringHEncr = line.substring(2);
+                            line = br.readLine();
+                            if (line.charAt(0) == '+') {
+                                decrHPossible = true;
+                            } else {
+                                decrHPossible = false;
+                            }
                             break;
                         case 'i':
                             decStringIPlain = line.substring(2);
                             break;
                         case 'I':
                             decStringIEncr = line.substring(2);
+                            line = br.readLine();
+                            if (line.charAt(0) == '+') {
+                                decrIPossible = true;
+                            } else {
+                                decrIPossible = false;
+                            }
 
                             dataList.add(
                                     new TestData(
@@ -187,7 +218,10 @@ public class RSAIncorrectEncryptionBatchTest {
                                             decStringHPlain,
                                             decStringHEncr,
                                             decStringIPlain,
-                                            decStringIEncr
+                                            decStringIEncr,
+                                            decrGPossible,
+                                            decrHPossible,
+                                            decrIPossible
                                     )
                             );
                             break;
@@ -248,6 +282,18 @@ public class RSAIncorrectEncryptionBatchTest {
 
         public String getDecStringIEncr() {
             return decStringIEncr;
+        }
+
+        public boolean isDecrGPossible() {
+            return decrGPossible;
+        }
+
+        public boolean isDecrHPossible() {
+            return decrHPossible;
+        }
+
+        public boolean isDecrIPossible() {
+            return decrIPossible;
         }
     }
 }
