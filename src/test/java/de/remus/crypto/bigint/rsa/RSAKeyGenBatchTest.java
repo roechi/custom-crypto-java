@@ -32,6 +32,7 @@ public class RSAKeyGenBatchTest {
         BigInt d = new BigInt(decStringD);
 
         assertThat(RSA.computeD(f, e)).isEqualTo(d);
+        logger.info(testData.getTestName() + ": compute d for phi=" + decStringF + " and e=" + decStringE + " -> expected: " + decStringD + " actual: " + decStringD);
     }
 
 

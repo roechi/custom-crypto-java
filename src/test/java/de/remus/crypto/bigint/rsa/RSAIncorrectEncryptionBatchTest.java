@@ -53,12 +53,29 @@ public class RSAIncorrectEncryptionBatchTest {
         BigInt i = new BigInt(iPlain);
         BigInt I = new BigInt(iEncr);
 
-        assertThat(RSA.encrypt(publicKey, g).toString()).isEqualTo(gEncr);
-        assertThat(RSA.decrypt(privateKey, G).toString().equals(gPlain)).isEqualTo(testData.isDecrGPossible());
-        assertThat(RSA.encrypt(publicKey, h).toString()).isEqualTo(hEncr);
-        assertThat(RSA.decrypt(privateKey, H).toString().equals(hPlain)).isEqualTo(testData.isDecrHPossible());
-        assertThat(RSA.encrypt(publicKey, i).toString()).isEqualTo(iEncr);
-        assertThat(RSA.decrypt(privateKey, I).toString().equals(iPlain)).isEqualTo(testData.isDecrIPossible());
+        String gEncrResult = RSA.encrypt(publicKey, g).toString();
+        logger.info(testData.getTestName() + ": encrypt " + gPlain + " -> " + gEncr + " actual: " + gEncrResult);
+        assertThat(gEncrResult).isEqualTo(gEncr);
+
+        String gDecrResult = RSA.decrypt(privateKey, G).toString();
+        logger.info(testData.getTestName() + ": decrypt " + gEncr + " -> " + gPlain + " actual: " + gDecrResult + " should aggree: " + testData.isDecrGPossible());
+        assertThat(gDecrResult.equals(gPlain)).isEqualTo(testData.isDecrGPossible());
+
+        String hEncrResult = RSA.encrypt(publicKey, h).toString();
+        logger.info(testData.getTestName() + ": encrypt " + hPlain + " -> " + hEncr + " actual: " + hEncrResult);
+        assertThat(hEncrResult).isEqualTo(hEncr);
+
+        String hDecrResult = RSA.decrypt(privateKey, H).toString();
+        logger.info(testData.getTestName() + ": decrypt " + hEncr + " -> " + hPlain + " actual: " + hDecrResult + " should aggree: " + testData.isDecrHPossible());
+        assertThat(hDecrResult.equals(hPlain)).isEqualTo(testData.isDecrHPossible());
+
+        String iEncrResult = RSA.encrypt(publicKey, i).toString();
+        logger.info(testData.getTestName() + ": encrypt " + iPlain + " -> " + iEncr + " actual: " + iEncrResult);
+        assertThat(iEncrResult).isEqualTo(iEncr);
+
+        String iDecrResult = RSA.decrypt(privateKey, I).toString();
+        logger.info(testData.getTestName() + ": decrypt " + iEncr + " -> " + iPlain + " actual: " + iDecrResult + " should aggree: " + testData.isDecrIPossible());
+        assertThat(iDecrResult.equals(iPlain)).isEqualTo(testData.isDecrIPossible());
     }
 
 

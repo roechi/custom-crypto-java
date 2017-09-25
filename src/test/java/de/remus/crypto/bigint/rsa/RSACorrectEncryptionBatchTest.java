@@ -53,12 +53,26 @@ public class RSACorrectEncryptionBatchTest {
         BigInt i = new BigInt(iPlain);
         BigInt I = new BigInt(iEncr);
 
-        assertThat(RSA.encrypt(publicKey, g).toString()).isEqualTo(gEncr);
-        assertThat(RSA.decrypt(privateKey, G).toString()).isEqualTo(gPlain);
-        assertThat(RSA.encrypt(publicKey, h).toString()).isEqualTo(hEncr);
-        assertThat(RSA.decrypt(privateKey, H).toString()).isEqualTo(hPlain);
-        assertThat(RSA.encrypt(publicKey, i).toString()).isEqualTo(iEncr);
-        assertThat(RSA.decrypt(privateKey, I).toString()).isEqualTo(iPlain);
+        String gEncrResult = RSA.encrypt(publicKey, g).toString();
+        logger.info(testData.getTestName() + ": encrypt " + gPlain + " -> expected: " + gEncr + " actual: " + gEncrResult);
+        assertThat(gEncrResult).isEqualTo(gEncr);
+        String gDecrResult = RSA.decrypt(privateKey, G).toString();
+        logger.info(testData.getTestName() + ": decrypt " + gEncr + " -> expected: " + gPlain + " actual: " + gDecrResult);
+        assertThat(gDecrResult).isEqualTo(gPlain);
+
+        String hEncrResult = RSA.encrypt(publicKey, h).toString();
+        logger.info(testData.getTestName() + ": encrypt " + hPlain + " -> expected: " + hEncr + " actual: " + hEncrResult);
+        assertThat(hEncrResult).isEqualTo(hEncr);
+        String hDecrResult = RSA.decrypt(privateKey, H).toString();
+        logger.info(testData.getTestName() + ": decrypt " + hEncr + " -> expected: " + hPlain + " actual: " + hDecrResult);
+        assertThat(hDecrResult).isEqualTo(hPlain);
+
+        String iEncrResult = RSA.encrypt(publicKey, i).toString();
+        logger.info(testData.getTestName() + ": encrypt " + iPlain + " -> expected: " + iEncr + " actual: " + iEncrResult);
+        assertThat(iEncrResult).isEqualTo(iEncr);
+        String iDecrResult = RSA.decrypt(privateKey, I).toString();
+        logger.info(testData.getTestName() + ": decrypt " + iEncr + " -> expected: " + iPlain + " actual: " + iDecrResult);
+        assertThat(iDecrResult).isEqualTo(iPlain);
     }
 
 
